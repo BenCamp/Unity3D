@@ -45,13 +45,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Game\GameLoop.cs" />
-     <Compile Include="Assets\Game\Test.cs" />
-     <Compile Include="Assets\Levels\Level.cs" />
-     <Compile Include="Assets\Ships\Command.cs" />
-     <Compile Include="Assets\Ships\Part.cs" />
-     <Compile Include="Assets\Ships\Ship.cs" />
-     <Compile Include="Assets\Ships\Wall.cs" />
+     <Compile Include="Assets\Collidable\CanEnter.cs" />
+     <Compile Include="Assets\Collidable\Collidable.cs" />
+     <Compile Include="Assets\Collidable\Item.cs" />
+     <Compile Include="Assets\Collidable\Structure.cs" />
+     <Compile Include="Assets\Collidable\Wall.cs" />
+     <Compile Include="Assets\Connection.cs" />
+     <Compile Include="Assets\GameLoop.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>

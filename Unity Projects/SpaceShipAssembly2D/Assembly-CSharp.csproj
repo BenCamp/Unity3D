@@ -45,13 +45,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Collidable\CanEnter.cs" />
-     <Compile Include="Assets\Collidable\Collidable.cs" />
-     <Compile Include="Assets\Collidable\Item.cs" />
-     <Compile Include="Assets\Collidable\Structure.cs" />
-     <Compile Include="Assets\Collidable\Wall.cs" />
-     <Compile Include="Assets\Connection.cs" />
-     <Compile Include="Assets\GameLoop.cs" />
+     <Compile Include="Assets\Scripts\ScriptCamera.cs" />
+     <Compile Include="Assets\Scripts\ScriptEngine.cs" />
+     <Compile Include="Assets\Scripts\ScriptMouse.cs" />
+     <Compile Include="Assets\Scripts\ScriptSelection.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>

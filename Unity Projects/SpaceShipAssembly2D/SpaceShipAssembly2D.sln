@@ -1,7 +1,7 @@
+﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2008
-
-Project("{862BC1A7-76BE-CE96-6A82-41F4E828FF6B}") = "SpaceShipAssembly2D", "Assembly-CSharp.csproj", "{E8EA2854-2E58-8317-06F9-0FBFAD6473E1}"
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpaceShipAssembly2D", "Assembly-CSharp.csproj", "{E8EA2854-2E58-8317-06F9-0FBFAD6473E1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

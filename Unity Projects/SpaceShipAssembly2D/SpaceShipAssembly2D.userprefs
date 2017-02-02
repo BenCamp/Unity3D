@@ -1,10 +1,12 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\StructureManager.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Resources\Scripts\Managers\PlacementCloneManager.cs">
     <Files>
-      <File FileName="Assets\Scripts\GameInput.cs" Line="58" Column="27" />
-      <File FileName="Assets\Scripts\StructureManager.cs" Line="28" Column="3" />
-      <File FileName="Assets\Scripts\GameState.cs" Line="4" Column="41" />
+      <File FileName="Assets\Resources\Scripts\Managers\StructureManager.cs" Line="25" Column="32" />
+      <File FileName="Assets\Resources\Scripts\Managers\ObjectManager.cs" Line="9" Column="14" />
+      <File FileName="Assets\Resources\Scripts\Managers\PlacementCloneManager.cs" Line="11" Column="2" />
+      <File FileName="Assets\Resources\Scripts\ConnecterConnection.cs" Line="8" Column="2" />
+      <File FileName="Assets\Resources\Scripts\GameInput.cs" Line="15" Column="4" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

@@ -45,17 +45,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Scripts\CameraControl.cs" />
-     <Compile Include="Assets\Scripts\ConnecterConnection.cs" />
-     <Compile Include="Assets\Scripts\EngineThrust.cs" />
-     <Compile Include="Assets\Scripts\GameInput.cs" />
-     <Compile Include="Assets\Scripts\GameState.cs" />
-     <Compile Include="Assets\Scripts\ObjectManager.cs" />
-     <Compile Include="Assets\Scripts\Selectable.cs" />
-     <Compile Include="Assets\Scripts\StartShipConstruction.cs" />
-     <Compile Include="Assets\Scripts\StructureConstruction.cs" />
-     <Compile Include="Assets\Scripts\StructureManager.cs" />
-     <Compile Include="Assets\Scripts\UISelected.cs" />
+     <Compile Include="Assets\Resources\Scripts\CameraControl.cs" />
+     <Compile Include="Assets\Resources\Scripts\ConnecterConnection.cs" />
+     <Compile Include="Assets\Resources\Scripts\EngineThrust.cs" />
+     <Compile Include="Assets\Resources\Scripts\GameInput.cs" />
+     <Compile Include="Assets\Resources\Scripts\GameState.cs" />
+     <Compile Include="Assets\Resources\Scripts\Managers\ObjectManager.cs" />
+     <Compile Include="Assets\Resources\Scripts\Managers\PlacementCloneManager.cs" />
+     <Compile Include="Assets\Resources\Scripts\Managers\StructureManager.cs" />
+     <Compile Include="Assets\Resources\Scripts\StartShipConstruction.cs" />
+     <Compile Include="Assets\Resources\Scripts\StructureConstruction.cs" />
+     <Compile Include="Assets\Resources\Scripts\UISelected.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>

@@ -3,6 +3,8 @@ using System.Collections;
 
 public class StructureManager : ObjectManager {
 
+	public GameState gameState;
+
 	public GameObject wall;
 	public GameObject floor;
 	public GameObject connection;
@@ -18,6 +20,11 @@ public class StructureManager : ObjectManager {
 	void Start (){
 		IsSelectable = true;
 		connectionList = new Vector4 (1, 1, 1, 1);
+		wall = Resources.Load ("Prefabs/Wall") as GameObject;
+		floor = Resources.Load ("Prefabs/Floor")as GameObject;
+		connection = Resources.Load ("Prefabs/Connection")as GameObject;
+
+		gameState = FindObjectOfType<GameState> ();
 	}
 
 	public bool CanThisConnect () {
@@ -39,5 +46,17 @@ public class StructureManager : ObjectManager {
 		}
 		return false; 
 			
+	}
+
+	public GameObject SpawnPlaceable () {
+		GameObject spawn = 
+			Instantiate (
+				Resources.Load (
+					"Prefabs/PlacementClonePrefabs/PlacementClone"), 
+				Vector3.zero, 
+				Quaternion.identity) 
+			as GameObject;
+		spawn.GetComponent <PlacementCloneManager> ().Spawner = gameObject;
+		return spawn;
 	}
 }

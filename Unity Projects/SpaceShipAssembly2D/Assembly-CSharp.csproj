@@ -48,14 +48,15 @@
      <Compile Include="Assets\Resources\Scripts\CameraControl.cs" />
      <Compile Include="Assets\Resources\Scripts\ConnecterConnection.cs" />
      <Compile Include="Assets\Resources\Scripts\EngineThrust.cs" />
-     <Compile Include="Assets\Resources\Scripts\GameInput.cs" />
-     <Compile Include="Assets\Resources\Scripts\GameState.cs" />
+     <Compile Include="Assets\Resources\Scripts\Managers\GameInput.cs" />
+     <Compile Include="Assets\Resources\Scripts\Managers\GameState.cs" />
      <Compile Include="Assets\Resources\Scripts\Managers\ObjectManager.cs" />
      <Compile Include="Assets\Resources\Scripts\Managers\PlacementCloneManager.cs" />
      <Compile Include="Assets\Resources\Scripts\Managers\StructureManager.cs" />
      <Compile Include="Assets\Resources\Scripts\StartShipConstruction.cs" />
      <Compile Include="Assets\Resources\Scripts\StructureConstruction.cs" />
      <Compile Include="Assets\Resources\Scripts\UISelected.cs" />
+     <Compile Include="Assets\TodoList.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>

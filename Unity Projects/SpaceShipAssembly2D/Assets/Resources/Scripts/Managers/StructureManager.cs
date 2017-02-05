@@ -20,9 +20,9 @@ public class StructureManager : ObjectManager {
 	void Start (){
 		IsSelectable = true;
 		connectionList = new Vector4 (1, 1, 1, 1);
-		wall = Resources.Load ("Prefabs/Wall") as GameObject;
-		floor = Resources.Load ("Prefabs/Floor")as GameObject;
-		connection = Resources.Load ("Prefabs/Connection")as GameObject;
+		wall = Resources.Load ("Prefabs/Structure/Wall") as GameObject;
+		floor = Resources.Load ("Prefabs/Structure/Floor")as GameObject;
+		connection = Resources.Load ("Prefabs/ShipParts/Connection")as GameObject;
 
 		gameState = FindObjectOfType<GameState> ();
 	}

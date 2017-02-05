@@ -27,7 +27,8 @@ public class PlacementCloneManager : MonoBehaviour {
 		cloneConnectionPrefab = Resources.Load ("Prefabs/PlacementClonePrefabs/ConnectionClone") as GameObject;
 		//Wait for the spawner to set itself as the spawner
 		while (spawner == null);
-		BuildCloneConnections(spawner.GetComponent<StructureManager> ().ConnectionList);
+		BuildCloneConnections (spawner.GetComponent<StructureManager> ().ConnectionList);
+		BuildCloneComponents ();
 	}
 
 	// Update is called once per frame
@@ -128,7 +129,16 @@ public class PlacementCloneManager : MonoBehaviour {
 			cloneConnections [3].name = "WestConnectionClone";
 		}
 	}
-		
+
+	private void BuildCloneComponents(){
+		var componentArray = spawner.GetComponentsInChildren(typeof(Component));
+		foreach (Component element in componentArray) {
+			Debug.Log (element);
+			if (element.GetComponent<CloneReplacer>() != null) {
+				element.GetComponent<CloneReplacer> ().Replace (gameObject.transform).transform.parent = gameObject.transform;
+			}
+		}
+	}
 	public void ConnectorRotationOffset(int change){
 		bool done = false;
 		while (!done) {

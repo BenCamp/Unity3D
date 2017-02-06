@@ -16,19 +16,19 @@ public class StructureConstruction : MonoBehaviour {
 	}
 
 	void Update () {
-		if (structure.ConnectionList != null) {
-			BuildStructure (structure.ConnectionList);
+		if (structure.ConnectorList != null) {
+			BuildStructure (structure.ConnectorList);
 			Destroy (GetComponent <StructureConstruction>());
 		}
 	}
 
-	public void BuildStructure(Vector4 connections){
+	public void BuildStructure(Vector4 connectors){
 		Floor ();
 		NorthWall ();
 		EastWall ();
 		SouthWall ();
 		WestWall ();
-		Connections (connections);
+		BuildConnectors (connectors);
 	}
 
 	private void Floor (){
@@ -84,37 +84,37 @@ public class StructureConstruction : MonoBehaviour {
 		}
 	}
 
-	private void Connections(Vector4 connections) {
-		if (structure.ConnectionList.x != 0) {
+	private void BuildConnectors(Vector4 Connectors) {
+		if (structure.ConnectorList.x != 0) {
 			Vector3 oldPos = new Vector3 (0, 11f, 0);
 			Vector3 newPos = rotMatrix.MultiplyPoint3x4 (oldPos);
-			structure.connections[0] = (GameObject) Instantiate (structure.connection, newPos, gameObject.transform.rotation);
-			structure.connections[0].transform.parent = gameObject.transform;
-			structure.connections [0].name = "NorthConnection";
+			structure.connectors[0] = (GameObject) Instantiate (structure.connector, newPos, gameObject.transform.rotation);
+			structure.connectors[0].transform.parent = gameObject.transform;
+			structure.connectors [0].name = "NorthConnector";
 		}
 
-		if (structure.ConnectionList.y != 0) {
+		if (structure.ConnectorList.y != 0) {
 			Vector3 oldPos = new Vector3 (11f, 0, 0);
 			Vector3 newPos = rotMatrix.MultiplyPoint3x4 (oldPos);
-			structure.connections[1] = (GameObject) Instantiate (structure.connection, newPos, gameObject.transform.rotation);
-			structure.connections[1].transform.parent = gameObject.transform;
-			structure.connections [1].name = "EastConnection";
+			structure.connectors[1] = (GameObject) Instantiate (structure.connector, newPos, gameObject.transform.rotation);
+			structure.connectors[1].transform.parent = gameObject.transform;
+			structure.connectors [1].name = "EastConnector";
 		}
 
-		if (structure.ConnectionList.z != 0) {
+		if (structure.ConnectorList.z != 0) {
 			Vector3 oldPos = new Vector3 (0, -11f, 0);
 			Vector3 newPos = rotMatrix.MultiplyPoint3x4 (oldPos);
-			structure.connections[2] = (GameObject) Instantiate (structure.connection, newPos, gameObject.transform.rotation);
-			structure.connections[2].transform.parent = gameObject.transform;
-			structure.connections [2].name = "SouthConnection";
+			structure.connectors[2] = (GameObject) Instantiate (structure.connector, newPos, gameObject.transform.rotation);
+			structure.connectors[2].transform.parent = gameObject.transform;
+			structure.connectors [2].name = "SouthConnector";
 		}
 
-		if (structure.ConnectionList.w != 0) {
+		if (structure.ConnectorList.w != 0) {
 			Vector3 oldPos = new Vector3 (-11f, 0, 0);
 			Vector3 newPos = rotMatrix.MultiplyPoint3x4 (oldPos);
-			structure.connections[3] = (GameObject) Instantiate (structure.connection, newPos, gameObject.transform.rotation);
-			structure.connections[3].transform.parent = gameObject.transform;
-			structure.connections [3].name = "WestConnection";
+			structure.connectors[3] = (GameObject) Instantiate (structure.connector, newPos, gameObject.transform.rotation);
+			structure.connectors[3].transform.parent = gameObject.transform;
+			structure.connectors [3].name = "WestConnector";
 		}
 			
 	}

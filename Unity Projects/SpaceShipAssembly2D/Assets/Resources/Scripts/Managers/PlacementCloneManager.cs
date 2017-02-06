@@ -9,25 +9,24 @@ public class PlacementCloneManager : MonoBehaviour {
 	private GameObject spawner;
 	public GameObject Spawner { get { return spawner; } set { spawner = value; } }
 
-	private bool hitOpenConnection = false;
-	public bool HitOpenConnection { get { return hitOpenConnection; } }
+	private bool hitOpenConnector = false;
+	public bool HitOpenConnector { get { return hitOpenConnector; } }
 
 	public Dictionary <int, GameObject> connectors = new Dictionary<int, GameObject>();
 	private float distanceToConnector = Mathf.Infinity;
 	private int keyOfClosest = -1;
 	private CircleCollider2D circCollider;
-	private GameObject [] cloneConnections = new GameObject [4];
-	private GameObject cloneConnectionPrefab;
+	private GameObject [] cloneConnectors = new GameObject [4];
+	private GameObject cloneConnectorPrefab;
 	private int rotationModifier = 0;
 
 	void Start () {
 		gameState = GameObject.Find ("GameManager").GetComponent<GameState> ();
-		gameState.Connecting = true;
 		circCollider = gameObject.GetComponent<CircleCollider2D> ();
-		cloneConnectionPrefab = Resources.Load ("Prefabs/PlacementClonePrefabs/ConnectionClone") as GameObject;
+		cloneConnectorPrefab = Resources.Load ("Prefabs/PlacementClonePrefabs/ConnectorClone") as GameObject;
 		//Wait for the spawner to set itself as the spawner
 		while (spawner == null);
-		BuildCloneConnections (spawner.GetComponent<StructureManager> ().ConnectionList);
+		BuildCloneConnectors (spawner.GetComponent<StructureManager> ().ConnectorList);
 		BuildCloneComponents ();
 	}
 
@@ -36,14 +35,14 @@ public class PlacementCloneManager : MonoBehaviour {
 
 		Vector3 mousePos = Camera.main.ScreenToWorldPoint (Input.mousePosition);
 		mousePos.z = 0;
-		if (!hitOpenConnection) {
+		if (!hitOpenConnector) {
 			gameObject.transform.position = mousePos;
 			gameObject.transform.rotation = Quaternion.identity;
 		} else {
 
 			//Reset the connector distance
 			//Needed because the connector was getting stuck
-			//Each new connection the clone would jump to had to be closer to the mouse then the last without this
+			//Each new Connector the clone would jump to had to be closer to the mouse then the last without this
 			distanceToConnector = Mathf.Infinity;
 
 			//Check each connector 
@@ -60,22 +59,21 @@ public class PlacementCloneManager : MonoBehaviour {
 
 					//Have the north side pointing toward the center of the connectee structure
 					switch (connectors [key].name) {
-					case "NorthConnection":
+					case "NorthConnector":
 						transform.Rotate (0, 0, 180 + GetConnectorRotationOffset());
 						break;
-					case "EastConnection":
+					case "EastConnector":
 						transform.Rotate (0, 0, 90 + GetConnectorRotationOffset());
 						break;
-					case "SouthConnection":
+					case "SouthConnector":
 						transform.Rotate (0, 0, 0 + GetConnectorRotationOffset());
 						break;
-					case "WestConnection":
+					case "WestConnector":
 						transform.Rotate (0, 0, 270 + GetConnectorRotationOffset());
 						break;
 					default:
 						break;
 					}
-
 				}
 			}
 			//Offset the CircleCollider2D so it is on the Mouse
@@ -87,9 +85,13 @@ public class PlacementCloneManager : MonoBehaviour {
 	}
 
 	void OnTriggerEnter2D (Collider2D other) {
-		if (other.transform.tag == "Connection"){
-			hitOpenConnection = true;
-			if (other.GetComponent<ConnecterConnection>().Connected == null){
+		if (other.transform.tag == "Connector" 
+			&& (other.transform.parent.GetInstanceID() != spawner.transform.GetInstanceID())
+			&& (other.transform.parent.parent != null)
+			&& (other.transform.parent.parent.name == "PlayerShip")){
+
+			hitOpenConnector = true;
+			if (other.tag == "Connector"){
 				connectors.Add(other.GetInstanceID(), other.gameObject);
 			}
 		}
@@ -98,47 +100,53 @@ public class PlacementCloneManager : MonoBehaviour {
 	void OnTriggerExit2D (Collider2D other) {
 		connectors.Remove (other.GetInstanceID());
 		if (connectors.Count == 0) {
-			hitOpenConnection = false;
+			hitOpenConnector = false;
 			gameObject.GetComponent<CircleCollider2D> ().offset = Vector3.zero;
 		}
 	}
 
-	private void BuildCloneConnections(Vector4 connections) {
-		if (connections.x != 0) {
+	private void BuildCloneConnectors(Vector4 Connectors) {
+		if (Connectors.x != 0) {
 			Vector3 pos = new Vector3 (0, 11f, 0);
-			cloneConnections [0] = (GameObject) Instantiate (cloneConnectionPrefab, pos, Quaternion.identity);
-			cloneConnections [0].transform.parent = gameObject.transform;
-			cloneConnections [0].name = "NorthConnectionClone";
+			cloneConnectors [0] = (GameObject) Instantiate (cloneConnectorPrefab, pos, Quaternion.identity);
+			cloneConnectors [0].transform.parent = gameObject.transform;
+			cloneConnectors [0].name = "NorthConnectorClone";
 		}
-		if (connections.y != 0) {
+		if (Connectors.y != 0) {
 			Vector3 pos = new Vector3 (11f, 0, 0);
-			cloneConnections [1] = (GameObject) Instantiate (cloneConnectionPrefab, pos, Quaternion.identity);
-			cloneConnections [1].transform.parent = gameObject.transform;
-			cloneConnections [1].name = "EastConnectionClone";
+			cloneConnectors [1] = (GameObject) Instantiate (cloneConnectorPrefab, pos, Quaternion.identity);
+			cloneConnectors [1].transform.parent = gameObject.transform;
+			cloneConnectors [1].name = "EastConnectorClone";
 		}
-		if (connections.z != 0) {
+		if (Connectors.z != 0) {
 			Vector3 pos = new Vector3 (0, -11f, 0);
-			cloneConnections [2] = (GameObject) Instantiate (cloneConnectionPrefab, pos, Quaternion.identity);
-			cloneConnections [2].transform.parent = gameObject.transform;
-			cloneConnections [2].name = "SouthConnectionClone";
+			cloneConnectors [2] = (GameObject) Instantiate (cloneConnectorPrefab, pos, Quaternion.identity);
+			cloneConnectors [2].transform.parent = gameObject.transform;
+			cloneConnectors [2].name = "SouthConnectorClone";
 		}
-		if (connections.w != 0) {
+		if (Connectors.w != 0) {
 			Vector3 pos = new Vector3 (-11f, 0, 0);
-			cloneConnections [3] = (GameObject) Instantiate (cloneConnectionPrefab, pos, Quaternion.identity);
-			cloneConnections [3].transform.parent = gameObject.transform;
-			cloneConnections [3].name = "WestConnectionClone";
+			cloneConnectors [3] = (GameObject) Instantiate (cloneConnectorPrefab, pos, Quaternion.identity);
+			cloneConnectors [3].transform.parent = gameObject.transform;
+			cloneConnectors [3].name = "WestConnectorClone";
 		}
 	}
 
 	private void BuildCloneComponents(){
-		var componentArray = spawner.GetComponentsInChildren(typeof(Component));
-		foreach (Component element in componentArray) {
-			Debug.Log (element);
-			if (element.GetComponent<CloneReplacer>() != null) {
-				element.GetComponent<CloneReplacer> ().Replace (gameObject.transform).transform.parent = gameObject.transform;
+		foreach (Transform child in spawner.transform) {
+
+			Debug.Log (child);
+
+			if (child.GetComponent<CloneReplacer>() != null) {
+				Transform offset = child.GetComponent<CloneReplacer> ().GetPartTransform ();
+				GameObject clone = child.GetComponent<CloneReplacer> ().Replace (gameObject.transform);
+				clone.transform.parent = gameObject.transform;
+				clone.transform.Translate (offset.localPosition);
+				clone.transform.rotation = offset.localRotation;
 			}
 		}
 	}
+
 	public void ConnectorRotationOffset(int change){
 		bool done = false;
 		while (!done) {
@@ -154,7 +162,7 @@ public class PlacementCloneManager : MonoBehaviour {
 				}
 
 				//Check if the current array item has a ConnectorClone
-				if (cloneConnections [rotationModifier] != null)
+				if (cloneConnectors [rotationModifier] != null)
 					done = true;
 			} else if (change == -1) {
 				if (rotationModifier == 1) {
@@ -166,7 +174,7 @@ public class PlacementCloneManager : MonoBehaviour {
 					rotationModifier--;
 				}
 
-				if (cloneConnections [rotationModifier] != null)
+				if (cloneConnectors [rotationModifier] != null)
 					done = true;
 			} else {
 				Debug.Log ("Error: unknown command for PlacementClone!");
@@ -192,5 +200,12 @@ public class PlacementCloneManager : MonoBehaviour {
 			return 0;
 			break;
 		}
+	}
+
+	public void CreateConnectors (){
+		spawner.transform.position = transform.position;
+		spawner.transform.rotation = transform.rotation;
+		spawner.GetComponent<StructureManager>().SetConnections ();
+		Destroy (gameObject);
 	}
 }

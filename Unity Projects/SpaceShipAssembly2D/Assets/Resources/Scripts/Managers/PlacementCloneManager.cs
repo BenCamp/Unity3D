@@ -134,9 +134,6 @@ public class PlacementCloneManager : MonoBehaviour {
 
 	private void BuildCloneComponents(){
 		foreach (Transform child in spawner.transform) {
-
-			Debug.Log (child);
-
 			if (child.GetComponent<CloneReplacer>() != null) {
 				Transform offset = child.GetComponent<CloneReplacer> ().GetPartTransform ();
 				GameObject clone = child.GetComponent<CloneReplacer> ().Replace (gameObject.transform);

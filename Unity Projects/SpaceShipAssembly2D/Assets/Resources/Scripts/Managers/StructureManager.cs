@@ -18,8 +18,6 @@ public class StructureManager : ObjectManager {
 
 	public Vector4 ConnectorList { get { return connectorList; } }
 
-	private GameObject[] shipConnectorsIntersectingWithThisStructure = new GameObject[4];
-
 	void Start (){
 		IsSelectable = true;
 		connectorList = new Vector4 (1, 1, 1, 1);
@@ -74,39 +72,96 @@ public class StructureManager : ObjectManager {
 		//For each Connector of this structure, check if they fall in the center of a structure from the previous bunch of connectors
 		//Delete any connector that satisfies both, and set each gameobject in the others respective connections array
 		//Create the connection object between the two structures
-
-
-
-
-		//Probably not useful
-		/*
-		CircleCollider2D collider;
-		if (ConnectorList.x == 1) {
-			if (connectors [0].tag == "Connector") {
-				collider = connectors [0].GetComponent<CircleCollider2D> ();
-				var listOfCollisions = Physics2D.OverlapCircleAll (transform.position, gameObject.GetComponent<CircleCollider2D> ().radius);
-				foreach (Collider2D col in listOfCollisions) {
-					if (collider.transform.parent != null
-						&& collider.transform.parent.name == "PlayerShip") {
+		var listOfCollisions = Physics2D.OverlapBoxAll (transform.position, gameObject.GetComponent<BoxCollider2D> ().size, gameObject.transform.rotation.z);
+		foreach (Collider2D col in listOfCollisions) {
+			if (col.tag == "Connector") {
+				GameObject colParent = col.transform.parent.gameObject;
+				if (colParent.transform.parent != null && colParent.transform.parent.name == "PlayerShip") {
+					var result = IsOneOfMyConnectorsOnTheStructureAttachedToThePlayerShip (colParent);
+					if (result != -1) {
+						gameObject.AddComponent <FixedJoint2D> ().connectedBody = colParent.GetComponent<Rigidbody2D> ();
+						gameObject.transform.parent = colParent.transform.parent;
+						if (colParent.GetComponent<StructureManager> ().SetConnectionToOtherStructure (gameObject, col)) {
+							Destroy (connectors [result].gameObject);
+							connectors [result] = colParent;
+						} else {
+							Debug.Log ("SetConnectionToOtherStructure returned false!");
+						}
+					} else {
+						Debug.Log ("Result came back as -1!");
 					}
 				}
 			}
 		}
-		if (ConnectorList.y == 1) {
-			if (connectors [1].tag == "Connector") {
-			}
-		}
-		if (ConnectorList.z == 1) {
-			if (connectors [2].tag == "Connector") {
-			}
-		}
-		if (ConnectorList.w == 1) {
-			if (connectors [3].tag == "Connector") {
-			}
-		}
-*/
 		gameState.Connecting = false;
 	}
 
-	//TODO Create class that removes connector of a structure if it is the connectee
+	private int IsOneOfMyConnectorsOnTheStructureAttachedToThePlayerShip(GameObject colParent){
+		int count = 0;
+		if (ConnectorList.x == 1) {
+			if (CheckPosition (count, colParent))
+				return count;
+		}
+		count++;
+		if (ConnectorList.y == 1) {
+			if (CheckPosition (count, colParent))
+				return count;
+		}
+		count++;
+		if (ConnectorList.z == 1) {
+			if (CheckPosition (count, colParent))
+				return count;
+		}
+		count++;
+		if (ConnectorList.w == 1) {
+			if (CheckPosition (count, colParent))
+				return count;
+		}
+		return -1;
+	}
+
+	private bool CheckPosition (int count, GameObject colParent){
+		if (connectors [count].tag == "Connector") {
+			var hits = Physics2D.CircleCastAll (connectors [count].transform.position, connectors [count].GetComponent<CircleCollider2D> ().radius, Vector2.zero);
+			foreach (RaycastHit2D hit in hits) {
+				if (hit.collider.gameObject == colParent) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	public bool SetConnectionToOtherStructure(GameObject other, Collider2D con){
+		if (ConnectorList.x == 1) {
+			if (connectors [0] != null && con.gameObject.GetInstanceID() == connectors[0].gameObject.GetInstanceID()) {
+				Destroy (connectors [0].gameObject);
+				connectors [0] = other;
+				return true;
+			}
+		}
+		if (ConnectorList.y == 1) {
+			if (connectors [1] != null && con.gameObject.GetInstanceID () == connectors [1].gameObject.GetInstanceID ()) {
+				Destroy (connectors [1].gameObject);
+				connectors [1] = other;
+				return true;
+			}
+		}
+		if (ConnectorList.z == 1) {
+			if (connectors [2] != null && con.gameObject.GetInstanceID () == connectors [2].gameObject.GetInstanceID ()) {
+				Destroy (connectors [2].gameObject);
+				connectors [2] = other;
+				return true;
+			
+			}
+		}
+		if (ConnectorList.w == 1) {
+			if (connectors [3] != null && con.gameObject.GetInstanceID () == connectors [3].gameObject.GetInstanceID ()) {
+				Destroy (connectors [3].gameObject);
+				connectors [3] = other;
+				return true;
+			}
+		}
+		return false;
+	}
 }

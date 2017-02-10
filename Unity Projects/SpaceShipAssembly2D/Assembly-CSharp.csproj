@@ -46,11 +46,14 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Resources\Scripts\CameraControl.cs" />
-     <Compile Include="Assets\Resources\Scripts\EngineThrust.cs" />
+     <Compile Include="Assets\Resources\Scripts\Managers\DefenseManager.cs" />
      <Compile Include="Assets\Resources\Scripts\Managers\GameInput.cs" />
      <Compile Include="Assets\Resources\Scripts\Managers\GameState.cs" />
      <Compile Include="Assets\Resources\Scripts\Managers\ObjectManager.cs" />
+     <Compile Include="Assets\Resources\Scripts\Managers\Parts\EngineManager.cs" />
+     <Compile Include="Assets\Resources\Scripts\Managers\Parts\PowerManager.cs" />
      <Compile Include="Assets\Resources\Scripts\Managers\PlacementCloneManager.cs" />
+     <Compile Include="Assets\Resources\Scripts\Managers\ShipManager.cs" />
      <Compile Include="Assets\Resources\Scripts\Managers\StructureManager.cs" />
      <Compile Include="Assets\Resources\Scripts\Placement\CloneReplacer.cs" />
      <Compile Include="Assets\Resources\Scripts\Placement\ConnecterConnection.cs" />

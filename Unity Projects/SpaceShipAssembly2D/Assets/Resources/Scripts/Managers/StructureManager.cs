@@ -67,11 +67,9 @@ public class StructureManager : ObjectManager {
 	}
 
 	public void SetConnections (){
-		//TODO create the SetConnections 
 		//Get the Connectors atached to structures attached to the player-ship that falls in the center of this structure
 		//For each Connector of this structure, check if they fall in the center of a structure from the previous bunch of connectors
 		//Delete any connector that satisfies both, and set each gameobject in the others respective connections array
-		//Create the connection object between the two structures
 		var listOfCollisions = Physics2D.OverlapBoxAll (transform.position, gameObject.GetComponent<BoxCollider2D> ().size, gameObject.transform.rotation.z);
 		foreach (Collider2D col in listOfCollisions) {
 			if (col.tag == "Connector") {
@@ -81,6 +79,14 @@ public class StructureManager : ObjectManager {
 					if (result != -1) {
 						gameObject.AddComponent <FixedJoint2D> ().connectedBody = colParent.GetComponent<Rigidbody2D> ();
 						gameObject.transform.parent = colParent.transform.parent;
+						if (gameObject.GetComponentInChildren<EngineManager> () != null) {
+							gameObject.transform.parent.GetComponent<ShipManager> ().EngineStateChange ();
+
+						}
+						if (gameObject.GetComponent<PowerManager> () != null) {
+							gameObject.transform.parent.GetComponent<ShipManager> ().PowerStateChange ();
+						}
+
 						if (colParent.GetComponent<StructureManager> ().SetConnectionToOtherStructure (gameObject, col)) {
 							Destroy (connectors [result].gameObject);
 							connectors [result] = colParent;

@@ -53,18 +53,21 @@
      <Compile Include="Assets\Resources\Scripts\Managers\CameraManager.cs" />
      <Compile Include="Assets\Resources\Scripts\Managers\CloneManager.cs" />
      <Compile Include="Assets\Resources\Scripts\Managers\DefenseManager.cs" />
+     <Compile Include="Assets\Resources\Scripts\Managers\EngineManager.cs" />
      <Compile Include="Assets\Resources\Scripts\Managers\InputManager.cs" />
      <Compile Include="Assets\Resources\Scripts\Managers\ObjectManager.cs" />
-     <Compile Include="Assets\Resources\Scripts\Managers\Objects\EngineManager.cs" />
+     <Compile Include="Assets\Resources\Scripts\Managers\Objects\Integrity\FloorManager.cs" />
+     <Compile Include="Assets\Resources\Scripts\Managers\Objects\Integrity\WallManager.cs" />
+     <Compile Include="Assets\Resources\Scripts\Managers\Objects\IntegrityManager.cs" />
      <Compile Include="Assets\Resources\Scripts\Managers\Objects\PowerManager.cs" />
      <Compile Include="Assets\Resources\Scripts\Managers\Objects\StructureManager.cs" />
      <Compile Include="Assets\Resources\Scripts\Managers\Objects\WeaponManager.cs" />
+     <Compile Include="Assets\Resources\Scripts\Managers\Objects\Weapons\LaserManager.cs" />
      <Compile Include="Assets\Resources\Scripts\Managers\PlacementClones\ExteriorPartCloneManager.cs" />
      <Compile Include="Assets\Resources\Scripts\Managers\PlacementClones\InteriorPartCloneManager.cs" />
      <Compile Include="Assets\Resources\Scripts\Managers\PlacementClones\StructureCloneManager.cs" />
      <Compile Include="Assets\Resources\Scripts\Managers\ShipManager.cs" />
      <Compile Include="Assets\Resources\Scripts\Managers\UIManager.cs" />
-     <Compile Include="Assets\Resources\Scripts\Managers\Weapons\LaserManager.cs" />
      <Compile Include="Assets\Resources\Scripts\Placement\ConnecterConnection.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>

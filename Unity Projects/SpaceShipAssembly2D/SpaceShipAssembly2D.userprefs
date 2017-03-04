@@ -1,10 +1,8 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Resources\Scripts\Managers\PlacementClones\InteriorPartCloneManager.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Resources\Scripts\Managers\PlacementClones\ExteriorPartCloneManager.cs">
     <Files>
-      <File FileName="Assets\Resources\Scripts\StartShipConstruction.cs" Line="1" Column="1" />
-      <File FileName="Assets\Resources\Scripts\CameraControl.cs" Line="1" Column="1" />
-      <File FileName="Assets\Resources\Scripts\Managers\PlacementClones\InteriorPartCloneManager.cs" Line="35" Column="1" />
+      <File FileName="Assets\Resources\Scripts\Managers\PlacementClones\ExteriorPartCloneManager.cs" Line="28" Column="36" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

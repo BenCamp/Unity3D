@@ -19,6 +19,7 @@ public class ShipManager : MonoBehaviour {
 	private int torque = 100;
 	public int Torque { get { return torque; } set { torque = value; } }
 
+
 	public void ForwardCommandGiven () {
 		int[] keyList = engineList.Keys.ToArray();
 		foreach(int key in keyList)

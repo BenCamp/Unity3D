@@ -13,7 +13,7 @@ public class StructureManager : ObjectManager {
 	public GameObject[] walls = new GameObject[12];
 	public GameObject[] floors = new GameObject[9];
 	public GameObject[] connectors = new GameObject[4];
-
+	public List <GameObject> attached = new List<GameObject>();
 	private Vector4 connectorList;
 
 	public Vector4 ConnectorList { get { return connectorList; } }

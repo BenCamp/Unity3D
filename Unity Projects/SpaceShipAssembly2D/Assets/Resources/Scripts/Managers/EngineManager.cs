@@ -10,6 +10,9 @@ public class EngineManager : ObjectManager {
 		objectName = "Engine";
 	}
 
+	void Update (){
+
+	}
 	public override void StateChange (){
 		SetStructure (gameObject.transform.parent.gameObject);
 		shipManager.EngineStateChange ();

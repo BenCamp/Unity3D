@@ -3,14 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class ExteriorPartCloneManager : CloneManager {
+	public int rotationRate = 10;
 	public Dictionary <int, GameObject> walls = new Dictionary<int, GameObject>();
 	private float distanceToWall = Mathf.Infinity;
 	private int keyOfClosest = -1;
-	private float rotationModifier = 0;
+	private int rotationModifier = 0;
 
+	private Vector3 eulerAngles;
+	private Vector3 scale = new Vector3 (1,1,1);
+
+	public float testX;
+	public float testY;
+	public float testZ;
 	void Start () {
 		CommonCloneSetup ();
-		circCollider.radius = 1;
+		circCollider.radius = 20f;
 	}
 
 
@@ -21,7 +28,6 @@ public class ExteriorPartCloneManager : CloneManager {
 			gameObject.transform.position = mousePos;
 			gameObject.transform.rotation = Quaternion.identity;
 		} else {
-
 			//Reset the wall distance
 			//Needed because the wall was getting stuck
 			//Each new Wall the clone would jump to had to be closer to the mouse then the  last without this
@@ -34,12 +40,12 @@ public class ExteriorPartCloneManager : CloneManager {
 				float distanceTemp = Vector3.Distance (mousePos, walls [key].transform.position);
 				if (distanceTemp < distanceToWall) {
 					distanceToWall = distanceTemp;
+					//Calculate position
+					Vector3 pos = walls[key].transform.position;
+					pos += walls [key].transform.up * 10;
+					transform.rotation = Quaternion.Euler (0, 0, walls [key].transform.rotation.eulerAngles.z + rotationModifier);
+					transform.position = pos;
 
-					//Place the clone on the wall's position
-					gameObject.transform.position = walls[key].transform.position;
-					gameObject.transform.rotation = walls [key].transform.parent.transform.rotation;
-
-		
 					keyOfClosest = key;
 				}
 			}
@@ -49,6 +55,7 @@ public class ExteriorPartCloneManager : CloneManager {
 					transform.InverseTransformPoint(mousePos).x,
 					transform.InverseTransformPoint(mousePos).y);
 		}
+
 	}
 
 	void OnTriggerEnter2D (Collider2D other) {
@@ -77,6 +84,8 @@ public class ExteriorPartCloneManager : CloneManager {
 			spawner.transform.rotation = transform.rotation;
 			spawner.transform.parent = walls [keyOfClosest].transform.parent;
 			spawner.GetComponent<ObjectManager>().SetShip (spawner.GetComponentInParent<ShipManager> ());
+			spawner.gameObject.AddComponent <FixedJoint2D> ();
+			spawner.GetComponent <FixedJoint2D> ().connectedBody = spawner.transform.parent.GetComponent<Rigidbody2D> ();
 			spawner.GetComponent<ObjectManager> ().StateChange ();
 			gameState.Placing = false;
 			KillClone ();
@@ -84,18 +93,17 @@ public class ExteriorPartCloneManager : CloneManager {
 	}
 
 	public override void ConnectorRotationOffset (int change){
-		if (change == 1) {
-			if (rotationModifier == 1) {
-				rotationModifier = -1;
+		if (change == -1) {
+			if (rotationModifier > 0) {
+				rotationModifier += -1*rotationRate;
 			} else {
-				//Increment Rotation Modifier
-				rotationModifier++;
+				rotationModifier = 359;
 			}
-		} else if (change == -1) {
-			if (rotationModifier == -1) {
-				rotationModifier = 1;
+		} else if (change == 1) {
+			if (rotationModifier < 360) {
+				rotationModifier += 1*rotationRate;
 			} else {
-				rotationModifier--;
+				rotationModifier = 0;
 			}
 		} else {
 			Debug.Log ("Error: unknown command for ExteriorPlacementClone!");

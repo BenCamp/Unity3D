@@ -11,6 +11,10 @@ public class StructureCloneManager : CloneManager {
 	public GameObject [] cloneConnectors = new GameObject [4];
 	private GameObject cloneConnectorPrefab;
 
+	private Vector3 translation;
+	private Vector3 eulerAngles;
+	private Vector3 scale = new Vector3 (1,1,1);
+
 	void Start () {
 		CommonCloneSetup ();
 		circCollider.radius = 30;

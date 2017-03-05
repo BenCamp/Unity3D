@@ -71,6 +71,7 @@ public class StructureConstruction : MonoBehaviour {
 			Vector3 newPos = rotMatrix.MultiplyPoint3x4 (oldPos);
 			structure.walls [i + 7] = (GameObject)Instantiate (structure.wall, newPos, rotation);
 			structure.walls [i + 7].transform.parent = gameObject.transform;
+			structure.walls [i + 7].transform.Rotate (Vector3.back* 180);
 		}
 
 	}
@@ -81,7 +82,7 @@ public class StructureConstruction : MonoBehaviour {
 			Vector3 newPos = rotMatrix.MultiplyPoint3x4 (oldPos);
 			structure.walls [i + 10] = (GameObject)Instantiate (structure.wall, newPos, rotation);
 			structure.walls [i + 10].transform.parent = gameObject.transform;
-			structure.walls [i + 10].transform.Rotate (Vector3.back* 90);
+			structure.walls [i + 10].transform.Rotate (Vector3.back* 270);
 		}
 	}
 

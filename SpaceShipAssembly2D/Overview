@@ -1,0 +1,21 @@
+3/24/17
+I've changed my mind on a few things with this project now that I've had gone through tutorials and done some experimenting. 
+
+ - I'm trying to use gameobjects as little as possible. 
+ - I want to break the game logic from the graphics.
+ - I'll use polygon colliders.
+ 
+ The biggest problem I can think of right now is how to detect when something has cut through a ship and sliced it into pieces. 
+ I'm sure there are algorithms that can handle this, just need to find them.
+ As a ships floor gets hit with some damaging effect, it will create new points in its collider holding the damage that push the outer edge of the collider inward.
+ I need to find how to detect when that edge gets too close to another edge, causing the ship to split.
+ This will make it sooo much easier to track pressure and structural integrity.
+ Shouldn't be a problem.
+ 
+ I'll be tracking the damage, collider points, and whatnot in an array and I'll be sending it to whatever I use for graphics.
+ Build the mesh programmatically and determine which image gets displayed based on the damage of the points provided.
+
+*****
+
+Right, that was easy: http://geomalgorithms.com/a07-_distance.html
+Should give me exactly what I need.

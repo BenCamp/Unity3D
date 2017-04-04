@@ -20,26 +20,29 @@ public class InputManager : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+		//TODO Add test to see if ANYTHING was input since last frame
+		//Will reduce the number of unnecessary tests
+
+
+
 		//Dealing with mouse actions
 		if (Input.GetMouseButtonDown (0)) {
 			if (!gameManager.paused) {
 				if (gameManager.BuildingStructure && test.isActiveAndEnabled) {
-					test.OnLeftClick ();
+					Vector2[] temp = test.OnClick ();
+					shipManager.StructureAdd (temp);
 				}
 
-				if (gameManager.placingModules) {
+				else if (gameManager.placingModules) {
 
 				}
 
-				if (gameManager.selected == null) {
-					RaycastHit2D hit = new RaycastHit2D ();
-					if (Physics2D.Raycast (mainCamera.ScreenPointToRay (Input.mousePosition), out hit)) {
-						gameManager.selected = hit.transform.gameObject;
-					}
-				} else {
-					RaycastHit2D hit = new RaycastHit2D ();
-					if (Physics2D.Raycast (mainCamera.ScreenPointToRay (Input.mousePosition), out hit) && hit == null) {
+				else {
+					RaycastHit2D hit = Physics2D.Raycast (new Vector2 (mainCamera.ScreenToWorldPoint (Input.mousePosition).x, mainCamera.ScreenToWorldPoint (Input.mousePosition).y), Vector2.zero, Mathf.Infinity);
+					if (hit.collider == null) {
 						gameManager.selected = null;
+					} else {
+						gameManager.selected = hit.collider.gameObject;
 					}
 				}
 			}
@@ -48,11 +51,21 @@ public class InputManager : MonoBehaviour {
 		if (Input.GetMouseButtonDown (1)) {
 			if (!gameManager.paused) {
 				if (gameManager.BuildingStructure && test.isActiveAndEnabled) {
-					test.OnRightClick ();
+					Vector2[] temp = test.OnClick ();
+					shipManager.StructureSubtract (temp);
+				} else if (gameManager.placingModules) {
+
+				} else {
+					RaycastHit2D hit = Physics2D.Raycast (new Vector2 (mainCamera.ScreenToWorldPoint (Input.mousePosition).x, mainCamera.ScreenToWorldPoint (Input.mousePosition).y), Vector2.zero, Mathf.Infinity);
+					if (hit == null) {
+						gameManager.selected = null;
+					} else {
+						gameManager.selected = hit.collider.gameObject;
+					}
 				}
 			}
 		}
-			
+
 		if (Input.GetKey (KeyCode.Escape)) {
 			
 		}
@@ -96,9 +109,5 @@ public class InputManager : MonoBehaviour {
 		if (Input.GetKeyUp (KeyCode.Space)) {
 			shipManager.CeaseFire ();
 		}
-	}
-
-	private void Select (RaycastHit2D hit){
-		gameManager.selected = hit.collider.gameObject;
 	}
 }

@@ -61,7 +61,7 @@
      <Compile Include="Assets\Resources\Scripts\Utility\PathFunctions.cs" />
      <Compile Include="Assets\Resources\Scripts\Utility\TestingBounds.cs" />
  <Reference Include="Facebook.Unity.Settings">
- <HintPath>C:/Users/PC/Documents/GitHub/Unity3D/Unity Projects/SpaceShipAssembly2D/Library/FacebookSDK/Facebook.Unity.Settings.dll</HintPath>
+ <HintPath>C:/Users/PC/Documents/GitHub/Unity3D/SpaceShipAssembly2D/Library/FacebookSDK/Facebook.Unity.Settings.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>

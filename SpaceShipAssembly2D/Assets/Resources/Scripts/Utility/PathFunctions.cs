@@ -19,15 +19,32 @@ public static class PathFunctions {
 		//Scaling factor to deal with float/int conversion
 		int scalingFactor = 10000;
 
-	/*	//Loop converts List<Vector2[]> to Path and IntPoint, then adds them to clipper object for processing
-		for (int i = 0; i < poly.pathCount; i++) {
-			Path allPolygonsPath = new Path (paths.Count);
 
-			for (int j = 0; j < poly.GetPath (i).Length; j++) {
-				//	allPolygonsPath.Add (new IntPoint (Mathf.Floor (polygons [i] [j])));
+		Path allPolygonsPath = new Path ();
+
+		for (int i = 0; i < poly.GetPath (0).Length; i++) {
+			allPolygonsPath.Add (new IntPoint (Mathf.Floor (poly.GetPath(0) [i].x * scalingFactor), Mathf.Floor (poly.GetPath(0) [i].y * scalingFactor)));
+		}
+
+		//Loop converts List<Vector2[]> to Path and IntPoint, then adds them to clipper object for processing
+		for (int i = 0; i < paths.Count; i++) {
+			for (int j = 0; j < paths[i].Length; j++) {
+				allPolygonsPath.Add (new IntPoint (Mathf.Floor (paths [i] [j].x * scalingFactor), Mathf.Floor (paths [i] [j].y * scalingFactor)));
 			}
-		}*/
-		return new List<Vector2[]> (); 
+			clip.AddPath (allPolygonsPath, PolyType.ptSubject, true);
+		}
+		Paths solution = new Paths ();
+		clip.Execute (ClipType.ctUnion, solution);
+
+		for (int i = 0; i < solution.Count; i++) {
+			Vector2[] unitedPolygon = new Vector2[solution[i].Count];
+			for (int j = 0; j < solution[i].Count; j++){
+				unitedPolygon[j] = new Vector2(solution[i][j].X / (float) scalingFactor, solution[i][j].Y / (float) scalingFactor);
+			}
+			polygonResult.Add (unitedPolygon);
+		}
+
+		return polygonResult; 
 	}
 
 	public static List <Vector2[]> Subtraction (PolygonCollider2D poly, List <Vector2[]> paths){

@@ -12,12 +12,12 @@ public class StructureManager : MonoBehaviour {
 	public int torque { get; set; }
 	public bool structureStateChanged { get; set; }
 
-	List <Vector2[]> pathsBuild;
-	List <Vector2[]> pathsDamage;
+	List <Vector2[]> pathsBuild = new List<Vector2[]> ();
+	List <Vector2[]> pathsDamage = new List<Vector2[]> ();
 
 	void Start (){
 		structureStateChanged = false;
-
+	
 		thrust = 100;
 		torque = 100;
 		body = gameObject.GetComponent<Rigidbody2D> ();
@@ -27,7 +27,11 @@ public class StructureManager : MonoBehaviour {
 	void Update (){
 		if (structureStateChanged) {
 			if (pathsBuild.Count > 0) {
-				PathFunctions.Addition (poly, pathsBuild);
+				pathsBuild = PathFunctions.Addition (poly, pathsBuild);
+				poly.SetPath (0, pathsBuild[0]);
+				if (pathsBuild.Count > 1) {
+				}
+
 				pathsBuild.Clear ();
 			}
 			if (pathsDamage.Count > 0) {

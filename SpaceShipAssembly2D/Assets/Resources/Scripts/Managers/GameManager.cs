@@ -4,11 +4,14 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour {
 	private bool 		cameraFollowSelected;
-	private	bool buildingStructure;
+	private	bool		buildingStructure;
  	
 	public 	bool 		paused 				{ get ; set; }
 	public 	bool 		placingModules 		{ get ; set; }
 	public 	GameObject 	selected 			{ get ; set; }
+
+	public TestingBounds test;
+
 
 	//Set the game camera to follow the selected GameObject
 	//Essentially a toggle
@@ -27,9 +30,16 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public bool BuildingStructure { get { return buildingStructure; } 
-		set { 
+		set {
 
-
+			//Already in the building structure state
+			if (buildingStructure) {
+				test.Disable ();
+				buildingStructure = false;
+			} else {
+				test.Enable ();
+				buildingStructure = true;
+			}
 		} 
 	}
 
@@ -39,5 +49,6 @@ public class GameManager : MonoBehaviour {
 		cameraFollowSelected = false;
 		paused = false;
 		placingModules = false;
+		test = GameObject.Find ("BoundsTester").GetComponent<TestingBounds> ();
 	}
 }

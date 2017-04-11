@@ -22,7 +22,12 @@ public class TestingBounds : MonoBehaviour {
 	}
 
 	public Vector2[] OnClick () {
-		return poly.GetPath (0);
+
+		Vector2[] temp = poly.GetPath (0);
+		for (int i = 0; i < temp.Length; i++) {
+			temp [i] = transform.TransformPoint (new Vector3 (temp [i].x, temp [i].y, 0));
+		}
+		return temp;
 	}
 
 	public void Enable () {

@@ -2,33 +2,61 @@
 using System.Collections;
 
 public class CameraManager : MonoBehaviour {
+	private Camera 				activeCamera;
+	private Vector3 			pos;
+	public 	GameObject 			follow;
 
-	public GameObject follow;
-	public GameManager gameManager;
 
-	void Start (){
-		gameManager = GameObject.Find ("Game").GetComponent<GameManager> ();
+	void Start () {
+		activeCamera = Camera.main;
 	}
 
-	void FixedUpdate () {
-		if (gameManager.CameraFollowSelected)
-			transform.position = new Vector3 (follow.transform.position.x, follow.transform.position.y, gameObject.transform.position.z);	
+	void Update () {
+		pos = activeCamera.transform.position;
+		if (follow != null)
+			activeCamera.transform.position = new Vector3 (follow.transform.position.x, follow.transform.position.y, follow.transform.position.z);	
 	}
+		
 
-	void SetShip (GameObject ship){
-		follow = ship;
-	}
-
+	//Basic functions
 	public void up () {
-		transform.position = new Vector3 (transform.position.x, transform.position.y + 1, transform.position.z);
+		activeCamera.transform.position = new Vector3 (pos.x, pos.y + 1, pos.z);
 	}
+
 	public void down () {
-		transform.position = new Vector3 (transform.position.x, transform.position.y - 1, transform.position.z);
+		activeCamera.transform.position = new Vector3 (pos.x, pos.y - 1, pos.z);
 	}
+
 	public void right () {
-		transform.position = new Vector3 (transform.position.x + 1, transform.position.y, transform.position.z);
+		activeCamera.transform.position = new Vector3 (pos.x + 1, pos.y, pos.z);
 	}
+
 	public void left () {
-		transform.position = new Vector3 (transform.position.x - 1, transform.position.y, transform.position.z);
+		activeCamera.transform.position = new Vector3 (pos.x - 1, pos.y, pos.z);
+	}
+
+
+	//
+	//Utility
+	//
+
+	public void SetActiveCamera (Camera cam) {
+		activeCamera = cam;
+	}
+
+	public RaycastHit2D MousePoint (){
+		return Physics2D.Raycast (new Vector2 (activeCamera.ScreenToWorldPoint (Input.mousePosition).x, activeCamera.ScreenToWorldPoint (Input.mousePosition).y), Vector2.zero, Mathf.Infinity);
+	}
+
+	public string CameraStatus () {
+		if (activeCamera == null) {
+			return "No active Camera!";
+		}
+
+		if (follow != null) {
+			return "Following " + follow.gameObject.name + " at [" + pos.x + ", " + pos.y + "]";
+		}
+
+		return "Manual Mode at [" + pos.x + ", " + pos.y + "]";
 	}
 }

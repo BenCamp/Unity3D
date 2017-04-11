@@ -1,14 +1,14 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Resources\Scripts\Utility\PathFunctions.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Resources\Scripts\Managers\GameManager.cs">
     <Files>
-      <File FileName="Assets\Resources\Scripts\Utility\TestingBounds.cs" Line="19" Column="37" />
-      <File FileName="Assets\Resources\Scripts\Managers\GameManager.cs" Line="20" Column="1" />
-      <File FileName="Assets\Resources\Scripts\Managers\CameraManager.cs" Line="14" Column="18" />
-      <File FileName="Assets\Resources\Scripts\Managers\InputManager.cs" Line="32" Column="39" />
-      <File FileName="Assets\Resources\Scripts\Managers\UIManager.cs" Line="15" Column="2" />
-      <File FileName="Assets\Resources\Scripts\Managers\StructureManager.cs" Line="30" Column="60" />
-      <File FileName="Assets\Resources\Scripts\Utility\PathFunctions.cs" Line="37" Column="45" />
+      <File FileName="Assets\Resources\Scripts\Utility\TestingBounds.cs" Line="28" Column="82" />
+      <File FileName="Assets\Resources\Scripts\Managers\GameManager.cs" Line="38" Column="4" />
+      <File FileName="Assets\Resources\Scripts\Managers\CameraManager.cs" Line="60" Column="58" />
+      <File FileName="Assets\Resources\Scripts\Managers\UIManager.cs" Line="1" Column="1" />
+      <File FileName="Assets\Resources\Scripts\Managers\StructureManager.cs" Line="31" Column="45" />
+      <File FileName="Assets\Resources\Scripts\Utility\InputKeys.cs" Line="6" Column="34" />
+      <File FileName="Assets\Resources\Scripts\Managers\InputManager.cs" Line="6" Column="44" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

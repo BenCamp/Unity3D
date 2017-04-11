@@ -58,6 +58,7 @@
      <Compile Include="Assets\Resources\Scripts\Managers\UIManager.cs" />
      <Compile Include="Assets\Resources\Scripts\Utility\ClipperLibrary.cs" />
      <Compile Include="Assets\Resources\Scripts\Utility\DrawLinesScript.cs" />
+     <Compile Include="Assets\Resources\Scripts\Utility\InputKeys.cs" />
      <Compile Include="Assets\Resources\Scripts\Utility\PathFunctions.cs" />
      <Compile Include="Assets\Resources\Scripts\Utility\TestingBounds.cs" />
  <Reference Include="Facebook.Unity.Settings">

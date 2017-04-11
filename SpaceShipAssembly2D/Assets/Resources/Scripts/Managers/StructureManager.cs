@@ -12,8 +12,8 @@ public class StructureManager : MonoBehaviour {
 	public int torque { get; set; }
 	public bool structureStateChanged { get; set; }
 
-	List <Vector2[]> pathsBuild = new List<Vector2[]> ();
-	List <Vector2[]> pathsDamage = new List<Vector2[]> ();
+	List<List<Vector2>> pathsBuild = new List<List<Vector2>> ();
+	List<List<Vector2>> pathsDamage = new List<List<Vector2>> ();
 
 	void Start (){
 		structureStateChanged = false;
@@ -26,28 +26,24 @@ public class StructureManager : MonoBehaviour {
 
 	void Update (){
 		if (structureStateChanged) {
-			if (pathsBuild.Count > 0) {
-				pathsBuild = PathFunctions.Addition (poly, pathsBuild);
-				poly.SetPath (0, pathsBuild[0]);
+			if (pathsBuild.Count > 1) {
+				pathsBuild = PathFunctions.Addition (pathsBuild);
+				poly.SetPath (0, pathsBuild[0].ToArray());
 				if (pathsBuild.Count > 1) {
 				}
 
 				pathsBuild.Clear ();
+
+				StructureAdd (poly.GetPath (0));
 			}
 			if (pathsDamage.Count > 0) {
-				PathFunctions.Subtraction (poly, pathsDamage);
+				//PathFunctions.Subtraction (poly, pathsDamage);
 				pathsDamage.Clear ();
 			}
 			structureStateChanged = false;
 		}
 	}
-
-
-
-	public List <Vector2[]> NewPathsFromDamage (){
-		return new List<Vector2[]> ();
-	}
-
+		
 	//Directional controls
 	public void ForwardCommandGiven () {
 		body.AddForce (new Vector2(transform.up.x * thrust * Time.deltaTime, transform.up.y * thrust * Time.deltaTime));
@@ -110,13 +106,17 @@ public class StructureManager : MonoBehaviour {
 
 	//Recieves paths to add to the structure
 	public void StructureAdd (Vector2[] toAdd) {
-		pathsBuild.Add (toAdd);
+		List <Vector2> temp = new List<Vector2> ();
+		foreach (Vector2 point in toAdd) {
+			temp.Add (point);
+		}
+		pathsBuild.Add(temp);
 		structureStateChanged = true;
 	}
 
 	//Receives paths to remove from the structure
 	public void StructureSubtract (Vector2[] damage) {
-		pathsDamage.Add (damage);
-		structureStateChanged = true;
+		//pathsDamage.Add (damage);
+		//structureStateChanged = true;
 	}
 }

@@ -1,20 +1,23 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class GameManager : MonoBehaviour {
-	private bool 			cameraFollowSelected;
-	private	bool			buildingStructure;
-	private	bool 			paused;
-	private bool 			placingModules;
+	private bool cameraFollowSelected;
+	private	bool paused;
+	private bool placingModules;
+	private	bool buildingStructure;
+	private float temporaryStatusMessageTimer = 0f;
+	private string temporaryStatusMessage;
 
-	private	GameObject 		selected;
+	private	GameObject selected;
 
-	private RaycastHit2D 	hit = new RaycastHit2D ();
+	private List<RaycastHit2D> hits = new List<RaycastHit2D> ();
 
-	public 	TestingBounds 	test;
-	public 	UIManager 		uiManager;
-	public	CameraManager 	cameraManager;
+	public 	TestingBounds test;
+	public 	UIManager uiManager;
+	public	CameraManager cameraManager;
 
 
 
@@ -29,12 +32,20 @@ public class GameManager : MonoBehaviour {
 	}
 
 	void Update () {
+		if (temporaryStatusMessageTimer > 0) {
+			temporaryStatusMessageTimer -= Time.deltaTime;
+		} else {
+			temporaryStatusMessage = "";
+		}
+
 		if (selected != null) {
 			uiManager.UpdateText ("Selected Object: " + selected.gameObject.name
 			+ "\n"
-			+ cameraManager.CameraStatus ());
+			+ cameraManager.CameraStatus ()
+			+ temporaryStatusMessage);
 		} else {
-			uiManager.UpdateText (cameraManager.CameraStatus ());
+			uiManager.UpdateText (cameraManager.CameraStatus ()
+				+ temporaryStatusMessage);
 		}
 	}
 
@@ -57,19 +68,6 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
-	public bool BuildingStructure { get { return buildingStructure; } 
-		set {
-
-			//Already in the building structure state
-			if (buildingStructure) {
-				test.Disable ();
-				buildingStructure = false;
-			} else {
-				test.Enable ();
-				buildingStructure = true;
-			}
-		} 
-	}
 
 	private void SetSelected (GameObject obj) {
 		selected = obj;
@@ -82,22 +80,33 @@ public class GameManager : MonoBehaviour {
 	//TODO Add logic for other states of the game.
 
 	public void PrimaryButtonPressed () {
-		//Something is selected
-		if (selected != null) {
+		//Mouse Pointer is over a GUI element
+		if (EventSystem.current.IsPointerOverGameObject ()) {
 			
-			//Adding onto a structure 
-			// "GetSM" Stands for Get Structure Manager
-			if (buildingStructure && test.isActiveAndEnabled && GetSM(selected) != null) {
-				Vector2[] temp = test.OnClick ();
-				GetSM(selected).StructureAdd (temp);
-			}
-				
-			SetSelected ();
 		}
 
-		//Nothing is selected
+		//Mouse Pointer is not over a GUI element
 		else {
-			SetSelected ();
+			//Something is selected
+			if (selected != null) {
+			
+				//Adding onto a structure 
+				// "GetSM" Stands for Get Structure Manager
+				if (buildingStructure && test.isActiveAndEnabled && GetSM (selected) != null) {
+					Vector2[] temp = test.OnClick ();
+					GetSM (selected).StructureAdd (temp);
+				} 
+
+				//Select something else or the same thing
+				else {
+					SetSelected ();
+				}
+			}
+
+			//Nothing is selected
+			else {
+				SetSelected ();
+			}
 		}
 	}
 
@@ -147,11 +156,48 @@ public class GameManager : MonoBehaviour {
 	//Check and see if the user has selected something 
 	// or clicked in empty space to deselect
 	private void SetSelected () {
-		hit = cameraManager.MousePoint ();
-		if (hit.collider == null) {
+
+		//Check all the colliders under the pointer
+		foreach (RaycastHit2D hit in cameraManager.MousePoint ()){
+
+			//The collider isn't the "brush"
+			if (hit.collider.gameObject.name != "BoundsTester")
+				hits.Add(hit);
+		}
+
+		//Nothing was hit
+		if (hits.Count == 0) {
 			selected = null;
+		} 
+
+		//Something that wasn't a GUI or the "brush" was hit
+		else {
+			selected = hits[0].collider.gameObject;
+		}
+
+		//Reset the 'hits' list
+		hits.Clear ();
+	}
+
+	//TODO Build a better brush object for building
+	//Toggle between building and not building
+	//Also enables and disables the brush for building
+	//For now called test
+	public void SetBuilding () {
+			
+		//Already in the building structure state
+		if (buildingStructure) {
+			temporaryStatusMessage += "\nNo longer Building";
+			temporaryStatusMessageTimer = 5f;
+			test.Disable ();
+			buildingStructure = false;
+		} else if (placingModules || selected == null){
+
 		} else {
-			selected = hit.collider.gameObject;
+			temporaryStatusMessage += "\nBuilding";
+			temporaryStatusMessageTimer = 5f;
+			test.Enable ();
+			buildingStructure = true;
 		}
 	}
 }

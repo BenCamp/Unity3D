@@ -44,8 +44,8 @@ public class CameraManager : MonoBehaviour {
 		activeCamera = cam;
 	}
 
-	public RaycastHit2D MousePoint (){
-		return Physics2D.Raycast (new Vector2 (activeCamera.ScreenToWorldPoint (Input.mousePosition).x, activeCamera.ScreenToWorldPoint (Input.mousePosition).y), Vector2.zero, Mathf.Infinity);
+	public RaycastHit2D[] MousePoint (){
+		return Physics2D.RaycastAll (new Vector2 (activeCamera.ScreenToWorldPoint (Input.mousePosition).x, activeCamera.ScreenToWorldPoint (Input.mousePosition).y), Vector2.zero, Mathf.Infinity);
 	}
 
 	public string CameraStatus () {

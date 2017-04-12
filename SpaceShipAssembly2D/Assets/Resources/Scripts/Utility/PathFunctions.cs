@@ -6,8 +6,19 @@ using ClipperLib;
 using Path = System.Collections.Generic.List<ClipperLib.IntPoint>;
 using Paths = System.Collections.Generic.List<System.Collections.Generic.List<ClipperLib.IntPoint>>;
 
+/*****
+ * Ben Camp <-- Da coder
+ * 
+ * This utility class allows us to use the Clipper Library to (hopefully) quickly determine the resulting shapes of 
+ * additions and subtractions to polygons used for collisions in the game.
+ * 
+ * Modified from code posted on : gamedev.stackexchange.com/questions/125927/how-do-i-merge-colliders-in-a-tile-based-game
+ * 
+ * 
+*****/
 public static class PathFunctions {
-	
+
+
 	//this function takes a list of polygons as a parameter, this list of polygons represent all the polygons that constitute collision in your level.
 	public static List<List<Vector2>> Addition(List<List<Vector2>> polygons){
 
@@ -64,6 +75,10 @@ public static class PathFunctions {
 		return unitedPolygons;
 	}
 
+	//TODO Subtraction function
+
+
+	//Used to simplify the polygon, removing redundant vertices
 	public static List<List<Vector2>> RemoveClosePointsInPolygons(List<List<Vector2>> polygons)
 	{
 		float proximityLimit = 0.1f;

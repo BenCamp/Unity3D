@@ -1,9 +1,14 @@
-﻿using System.Collections;
+﻿
+
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+
 public class GameManager : MonoBehaviour {
+
 	private bool cameraFollowSelected;
 	private	bool paused;
 	private bool placingModules;
@@ -14,6 +19,8 @@ public class GameManager : MonoBehaviour {
 	private	GameObject selected;
 
 	private List<RaycastHit2D> hits = new List<RaycastHit2D> ();
+
+	private Collider2D[] cols;
 
 	public 	TestingBounds test;
 	public 	UIManager uiManager;
@@ -89,12 +96,21 @@ public class GameManager : MonoBehaviour {
 		else {
 			//Something is selected
 			if (selected != null) {
-			
-				//Adding onto a structure 
+				cols = new Collider2D[10];
+				//Adding onto a structure. Checks if in building structure mode, whether the "brush" is active
+				// and enabled, and whether selected object has a StructureManager script attached to it.
 				// "GetSM" Stands for Get Structure Manager
 				if (buildingStructure && test.isActiveAndEnabled && GetSM (selected) != null) {
-					Vector2[] temp = test.OnClick ();
-					GetSM (selected).StructureAdd (temp);
+					test.GetComponent<PolygonCollider2D> ().OverlapCollider (new ContactFilter2D (), cols);
+
+					//Checks through the 
+					foreach (Collider2D col in cols) {
+						if (col != null && col.gameObject == selected) {
+							Vector2[] temp = test.OnClick ();
+							GetSM (selected).StructureAdd (temp);
+							break;
+						}
+					}
 				} 
 
 				//Select something else or the same thing

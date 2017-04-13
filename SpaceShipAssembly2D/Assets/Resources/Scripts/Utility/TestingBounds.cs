@@ -17,7 +17,7 @@ public class TestingBounds : MonoBehaviour {
 	void Update () {
 
 		Vector3 pos = Input.mousePosition;
-		gameObject.transform.position = Camera.main.ScreenToWorldPoint(pos);
+		gameObject.transform.position = new Vector3(Camera.main.ScreenToWorldPoint(pos).x, Camera.main.ScreenToWorldPoint(pos).y, 0);
 
 	}
 

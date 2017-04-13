@@ -15,20 +15,22 @@ public class DrawLinesScript : MonoBehaviour {
 		line = gameObject.AddComponent<LineRenderer>();
 		poly = gameObject.GetComponent<PolygonCollider2D> ();
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
 		Vector3 temp;
-		int i = 0;
-		line.positionCount = poly.points.Length + 1;
-		foreach (Vector2 vec in poly.points) {
+		line.positionCount = 0;
+		int j = 0;
+		for (int i = 0; i < poly.pathCount; i++){
+			line.positionCount += poly.GetPath(i).Length + 1;
 
-			temp = transform.TransformPoint(new Vector3 (vec.x, vec.y, 0));
-			line.SetPosition (i, temp);
-			i++;
+			foreach (Vector2 vec in poly.GetPath(i)) {
+				temp = transform.TransformPoint (new Vector3 (vec.x, vec.y, 0));
+				line.SetPosition (j, temp);
+				j++;
+			}
 		}
-		temp = transform.TransformPoint(new Vector3 (poly.points [0].x, poly.points [0].y, 0));
-		line.SetPosition (i, temp);
+		line.SetPosition (j, line.GetPosition(0));
 	}
 
 }

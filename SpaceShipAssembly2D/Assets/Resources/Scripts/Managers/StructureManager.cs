@@ -28,18 +28,46 @@ public class StructureManager : MonoBehaviour {
 	}
 
 	void Update (){
+		//Some thing or things have been added or removed to the structure
 		if (structureStateChanged) {
-			Debug.Log ("Structure State Changed");
-			if (pathsBuild.Count > 1) {
-				pathsBuild = PathFunctions.Addition (pathsBuild);
-				poly.SetPath (0, pathsBuild[0].ToArray());
-				if (pathsBuild.Count > 1) {
+			//Some thing or things have been added to the structure
+			if (pathsBuild.Count > 0) {
+				//Adds the current polygon to the build list so it can be combined
+				pathsBuild.Add (ConvertPathToList(poly.GetPath(0)));
+
+				//Builds the new path
+				pathsBuild = PathFunctions.Addition (ConvertPathToList(poly.GetPath(0)), pathsBuild);
+
+				//Only one path was returned
+				if (pathsBuild.Count == 1) {
+					poly.SetPath (0, pathsBuild [0].ToArray ());
 				}
 
+
+				//*****
+				//Experiment Begin
+				//*****
+				else {
+					poly.pathCount = pathsBuild.Count;
+					int i = 0;
+
+					foreach (List<Vector2> path in pathsBuild) {
+						poly.SetPath (i, pathsBuild [i].ToArray ());
+						i++;
+					}
+
+				}
+				//*****
+				//Experiment End
+				//*****
+
+
+				//Clears the path for next time
 				pathsBuild.Clear ();
 
-				StructureAdd (poly.GetPath (0));
 			}
+
+			//Some thing or things have damaged the structure
 			if (pathsDamage.Count > 0) {
 				//PathFunctions.Subtraction (poly, pathsDamage);
 				pathsDamage.Clear ();
@@ -68,16 +96,10 @@ public class StructureManager : MonoBehaviour {
 
 
 	//State checkers, basically has anything changed since the last time the state was checked
+	//Not sure what I'm going to do with these right now..
 	public void CheckState () {
-		for (int childNum = 0; childNum < transform.childCount; childNum++) {
-			GameObject child = transform.GetChild (childNum).gameObject;
-			if (!modules.ContainsKey(child.GetInstanceID())){
-				modules.Add(child.GetInstanceID(), child);
-			}
-		}
-
-		RecalcCOM ();
 	}
+
 	public void StructureCheckState () {
 	}
 
@@ -111,18 +133,19 @@ public class StructureManager : MonoBehaviour {
 	// Utility
 	//
 
+	//Converts provided Vector2 array to a Vector2 List
+	public List <Vector2> ConvertPathToList (Vector2[] path){
+		List <Vector2> temp = new List<Vector2> ();
+		foreach (Vector2 point in path) {
+			temp.Add (point);
+		}
+		return temp;
+	}
+
 	//Recieves paths to add to the structure
 	public void StructureAdd (Vector2[] toAdd) {
-
-		//The path is a valid path to add
-		if (ValidAddition (toAdd)) {
-			List <Vector2> temp = new List<Vector2> ();
-			foreach (Vector2 point in toAdd) {
-				temp.Add (point);
-			}
-			pathsBuild.Add (temp);
-			structureStateChanged = true;
-		}
+		pathsBuild.Add (ConvertPathToList(toAdd));
+		structureStateChanged = true;
 	}
 
 	//Receives paths to remove from the structure
@@ -132,11 +155,7 @@ public class StructureManager : MonoBehaviour {
 	}
 
 	//Calculate the Center of the Polygon in world coordinates based on the path provided
-	public void CalcCenter (Vector2[] path) {
-		
-	}
-
-	public bool ValidAddition (Vector2[] toAdd){
-		return true;
+	public Vector2 CalcCenter (Vector2[] path) {
+		return new Vector2 ();
 	}
 }

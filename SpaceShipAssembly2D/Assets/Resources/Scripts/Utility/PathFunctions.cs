@@ -19,8 +19,12 @@ using Paths = System.Collections.Generic.List<System.Collections.Generic.List<Cl
 public static class PathFunctions {
 
 
+	public static bool ValidAddition () {
+		return true; 
+	}
+
 	//this function takes a list of polygons as a parameter, this list of polygons represent all the polygons that constitute collision in your level.
-	public static List<List<Vector2>> Addition(List<List<Vector2>> polygons){
+	public static List<List<Vector2>> Addition(List <Vector2> mainPoly, List<List<Vector2>> polygons){
 
 		//this is going to be the result of the method
 		List<List<Vector2>> unitedPolygons = new List<List<Vector2>>();
@@ -30,17 +34,24 @@ public static class PathFunctions {
 		//a scaling factor, and when we're done, divide by the same scaling factor again
 		int scalingFactor = 10000;
 
-		//this loop will convert our List<List<Vector2>> to what Clipper works with, which is "Path" and "IntPoint"
-		//and then add all the Paths to the clipper object so we can process them
+
+		//Add the main polygon provided by the structure
+		Path allPolygonsPath = new Path (mainPoly.Count);
+		for (int i = 0; i < mainPoly.Count; i++) {
+			allPolygonsPath.Add(new IntPoint(Mathf.Floor(mainPoly[i].x * scalingFactor), Mathf.Floor(mainPoly[i].y * scalingFactor)));
+		}
+		clipper.AddPath(allPolygonsPath, PolyType.ptSubject, true);
+
+		//Add the polygons given by the "brush"
 		for (int i = 0; i < polygons.Count; i++)
 		{
-			Path allPolygonsPath = new Path(polygons[i].Count);
+			allPolygonsPath = new Path(polygons[i].Count);
 
 			for (int j = 0; j < polygons[i].Count; j++)
 			{
 				allPolygonsPath.Add(new IntPoint(Mathf.Floor(polygons[i][j].x * scalingFactor), Mathf.Floor(polygons[i][j].y * scalingFactor)));
 			}
-			clipper.AddPath(allPolygonsPath, PolyType.ptSubject, true);
+			clipper.AddPath(allPolygonsPath, PolyType.ptClip, true);
 
 		}
 
@@ -48,15 +59,9 @@ public static class PathFunctions {
 		Paths solution = new Paths();
 
 		//having added all the Paths added to the clipper object, we tell clipper to execute an union
-		clipper.Execute(ClipType.ctUnion, solution);
+		clipper.Execute(ClipType.ctUnion, solution, PolyFillType.pftEvenOdd);
 
-		//the union may not end perfectly, so we're gonna do an offset in our polygons, that is, expand them outside a little bit
-		ClipperOffset offset = new ClipperOffset();
-		offset.AddPaths(solution, JoinType.jtMiter, EndType.etClosedPolygon);
-		//5 is the ammount of offset
-		offset.Execute(ref solution, 5f);
-
-		//now we just need to conver it into a List<List<Vector2>> while removing the scaling
+		//now we just need to convert it into a List<List<Vector2>> while removing the scaling
 		foreach (Path path in solution)
 		{
 			List<Vector2> unitedPolygon = new List<Vector2>();

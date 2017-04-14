@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using ClipperLib;
+using VecPath = System.Collections.Generic.List<UnityEngine.Vector2>;
+using VecPaths = System.Collections.Generic.List<System.Collections.Generic.List<UnityEngine.Vector2>>;
 using Path = System.Collections.Generic.List<ClipperLib.IntPoint>;
 using Paths = System.Collections.Generic.List<System.Collections.Generic.List<ClipperLib.IntPoint>>;
 
@@ -17,63 +19,50 @@ using Paths = System.Collections.Generic.List<System.Collections.Generic.List<Cl
  * 
 *****/
 public static class PathFunctions {
+	//clipper only works with ints, so if we're working with floats, we need to multiply all our floats by
+	//a scaling factor, and when we're done, divide by the same scaling factor again
+	const int SCALING_FACTOR = 10000;
 
 
-	public static bool ValidAddition () {
-		return true; 
-	}
+	/*
+	 * 
+	 * PUBLIC FUNCTIONS
+	 * 
+	 */
 
-	//this function takes a list of polygons as a parameter, this list of polygons represent all the polygons that constitute collision in your level.
-	public static List<List<Vector2>> Addition(List <Vector2> mainPoly, List<List<Vector2>> polygons){
+	//Takes two VecPaths and combines them into a single Path if possible
+	public static VecPaths Addition(VecPaths mainPolys, VecPaths polygons){
+
 
 		//this is going to be the result of the method
-		List<List<Vector2>> unitedPolygons = new List<List<Vector2>>();
-		Clipper clipper = new Clipper();
+		VecPaths unitedPolygons = new VecPaths();
 
-		//clipper only works with ints, so if we're working with floats, we need to multiply all our floats by
-		//a scaling factor, and when we're done, divide by the same scaling factor again
-		int scalingFactor = 10000;
-
-
-		//Add the main polygon provided by the structure
-		Path allPolygonsPath = new Path (mainPoly.Count);
-		for (int i = 0; i < mainPoly.Count; i++) {
-			allPolygonsPath.Add(new IntPoint(Mathf.Floor(mainPoly[i].x * scalingFactor), Mathf.Floor(mainPoly[i].y * scalingFactor)));
-		}
-		clipper.AddPath(allPolygonsPath, PolyType.ptSubject, true);
-
-		//Add the polygons given by the "brush"
-		for (int i = 0; i < polygons.Count; i++)
-		{
-			allPolygonsPath = new Path(polygons[i].Count);
-
-			for (int j = 0; j < polygons[i].Count; j++)
-			{
-				allPolygonsPath.Add(new IntPoint(Mathf.Floor(polygons[i][j].x * scalingFactor), Mathf.Floor(polygons[i][j].y * scalingFactor)));
-			}
-			clipper.AddPath(allPolygonsPath, PolyType.ptClip, true);
-
-		}
-
-		//this will be the result
+		//this will be the result of the algorithm (will be converted into VecPaths and stored in unitedPolygons)
 		Paths solution = new Paths();
 
-		//having added all the Paths added to the clipper object, we tell clipper to execute an union
+
+		Path allPolygonsPath;
+
+		Clipper clipper = new Clipper();
+
+
+
+		//Add the main polygons provided by the structure
+		clipper.AddPaths(ConvertVecPathsToPaths(mainPolys), PolyType.ptSubject, true);
+
+		//Add the polygons given by the "brush"
+		clipper.AddPaths(ConvertVecPathsToPaths(polygons), PolyType.ptClip, true);
+
+		//Clipper executes a union combining all the paths if possible
 		clipper.Execute(ClipType.ctUnion, solution, PolyFillType.pftEvenOdd);
 
-		//now we just need to convert it into a List<List<Vector2>> while removing the scaling
-		foreach (Path path in solution)
-		{
-			List<Vector2> unitedPolygon = new List<Vector2>();
-			foreach (IntPoint point in path)
-			{
-				unitedPolygon.Add(new Vector2(point.X / (float)scalingFactor, point.Y / (float)scalingFactor));
-			}
-			unitedPolygons.Add(unitedPolygon);
-		}
+		//Something to stop it from leaving those small paths completely overlapped by the larger path
+		solution = RemoveOverlappedPaths(solution);
 
-		//this removes some redundant vertices in the polygons when they are too close from each other
-		//may be useful to clean things up a little if your initial collisions don't match perfectly from tile to tile
+		//Convert solution into VecPaths while removing the scaling
+		unitedPolygons = ConvertPathsToVecPaths (solution);
+
+		//this removes some redundant vertices in the polygons when they are too close to each other
 		unitedPolygons = RemoveClosePointsInPolygons(unitedPolygons);
 
 		//everything done
@@ -83,17 +72,82 @@ public static class PathFunctions {
 	//TODO Subtraction function
 
 
-	//Used to simplify the polygon, removing redundant vertices
-	public static List<List<Vector2>> RemoveClosePointsInPolygons(List<List<Vector2>> polygons)
+
+
+
+	/*
+	 * 
+	 * PRIVATE FUNCTIONS (Utility of Utility :P)
+	 * 
+	 */
+
+	//Convert VecPaths to Paths, also adds the scaling factor
+	private static Paths ConvertVecPathsToPaths (VecPaths vecPaths){
+
+		//The List<List<IntPoints>> (A.K.A. Paths) that will be returned. 
+		Paths solution = new Paths ();
+
+		//Each vector2 of a VecPath for each polygon will be converted into IntPoints
+		// and stored as a Path 
+		Path allPolygonsPath;
+
+		for (int i = 0; i < vecPaths.Count; i++)
+		{
+			allPolygonsPath = new Path(vecPaths[i].Count);
+
+			for (int j = 0; j < vecPaths[i].Count; j++)
+			{
+				//Adds the scaling factor as it converts the Vector2 to an IntPoint
+				allPolygonsPath.Add(new IntPoint(Mathf.Floor(vecPaths[i][j].x * SCALING_FACTOR), Mathf.Floor(vecPaths[i][j].y * SCALING_FACTOR)));
+			}
+			solution.Add(allPolygonsPath);
+
+		}
+
+
+		return solution;
+	}
+
+
+	//Convert Paths to VecPaths, also removes the scaling factor
+	private static VecPaths ConvertPathsToVecPaths (Paths paths){
+
+		VecPaths solution = new VecPaths ();
+		foreach (Path path in paths)
+		{
+			VecPath unitedPolygon = new VecPath();
+			foreach (IntPoint point in path)
+			{
+				unitedPolygon.Add(new Vector2(point.X / (float)SCALING_FACTOR, point.Y / (float)SCALING_FACTOR));
+			}
+			solution.Add(unitedPolygon);
+		}
+
+		return solution;
+	}
+		
+	//TODO Remove totally overlapped paths
+	private static Paths RemoveOverlappedPaths (Paths paths){
+		Paths solution = new Paths ();
+
+
+
+		return solution;
+	}
+
+
+
+	//Simplifies the polygon, removing redundant vertices
+	private static VecPaths RemoveClosePointsInPolygons(VecPaths polygons)
 	{
 		float proximityLimit = 0.1f;
 
-		List<List<Vector2>> resultPolygons = new List<List<Vector2>>();
+		VecPaths resultPolygons = new VecPaths();
 
-		foreach(List<Vector2> polygon in polygons)
+		foreach(VecPath polygon in polygons)
 		{
-			List<Vector2> pointsToTest = polygon;
-			List<Vector2> pointsToRemove = new List<Vector2>();
+			VecPath pointsToTest = polygon;
+			VecPath pointsToRemove = new VecPath();
 
 			foreach (Vector2 pointToTest in pointsToTest)
 			{

@@ -4,9 +4,10 @@
     <Files>
       <File FileName="Assets\Resources\Scripts\Utility\TestingBounds.cs" Line="22" Column="3" />
       <File FileName="Assets\Resources\Scripts\Managers\GameManager.cs" Line="107" Column="40" />
-      <File FileName="Assets\Resources\Scripts\Managers\StructureManager.cs" Line="39" Column="76" />
-      <File FileName="Assets\Resources\Scripts\Utility\PathFunctions.cs" Line="27" Column="45" />
+      <File FileName="Assets\Resources\Scripts\Managers\StructureManager.cs" Line="46" Column="23" />
+      <File FileName="Assets\Resources\Scripts\Utility\PathFunctions.cs" Line="133" Column="3" />
       <File FileName="Assets\Resources\Scripts\Utility\DrawLinesScript.cs" Line="32" Column="4" />
+      <File FileName="Assets\Resources\Scripts\Utility\ClipperLibrary.cs" Line="470" Column="41" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

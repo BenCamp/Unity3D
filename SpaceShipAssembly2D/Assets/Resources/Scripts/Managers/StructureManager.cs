@@ -14,7 +14,7 @@ public class StructureManager : MonoBehaviour {
 	public int torque { get; set; }
 	public bool structureStateChanged { get; set; }
 
-
+	List<List<Vector2>> pathsOfStructure = new List<List<Vector2>> ();
 	List<List<Vector2>> pathsBuild = new List<List<Vector2>> ();
 	List<List<Vector2>> pathsDamage = new List<List<Vector2>> ();
 
@@ -32,11 +32,9 @@ public class StructureManager : MonoBehaviour {
 		if (structureStateChanged) {
 			//Some thing or things have been added to the structure
 			if (pathsBuild.Count > 0) {
-				//Adds the current polygon to the build list so it can be combined
-				pathsBuild.Add (ConvertPathToList(poly.GetPath(0)));
 
 				//Builds the new path
-				pathsBuild = PathFunctions.Addition (ConvertPathToList(poly.GetPath(0)), pathsBuild);
+				pathsBuild = PathFunctions.Addition (ConvertToListList(poly), pathsBuild);
 
 				//Only one path was returned
 				if (pathsBuild.Count == 1) {
@@ -140,6 +138,16 @@ public class StructureManager : MonoBehaviour {
 			temp.Add (point);
 		}
 		return temp;
+	}
+
+	//Converts privided List<Vector2> to List<List<Vector2>>
+	public List<List<Vector2>> ConvertToListList(PolygonCollider2D cols){
+
+		List <List<Vector2>> listlist = new List<List<Vector2>> ();
+		for (int i = 0; i < cols.pathCount; i++) {
+			listlist.Add(ConvertPathToList(cols.GetPath(i)));
+		}
+		return listlist;
 	}
 
 	//Recieves paths to add to the structure

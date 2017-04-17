@@ -47,6 +47,11 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Documentation\TodoList.cs" />
+     <Compile Include="Assets\Resources\Scripts\Damage\Damage.cs" />
+     <Compile Include="Assets\Resources\Scripts\Damage\Energy.cs" />
+     <Compile Include="Assets\Resources\Scripts\Damage\Environment.cs" />
+     <Compile Include="Assets\Resources\Scripts\Damage\Explosive.cs" />
+     <Compile Include="Assets\Resources\Scripts\Damage\Kinetic.cs" />
      <Compile Include="Assets\Resources\Scripts\Managers\CameraManager.cs" />
      <Compile Include="Assets\Resources\Scripts\Managers\GameManager.cs" />
      <Compile Include="Assets\Resources\Scripts\Managers\InputManager.cs" />
@@ -56,10 +61,13 @@
      <Compile Include="Assets\Resources\Scripts\Managers\Modules\ModuleManager.cs" />
      <Compile Include="Assets\Resources\Scripts\Managers\StructureManager.cs" />
      <Compile Include="Assets\Resources\Scripts\Managers\UIManager.cs" />
+     <Compile Include="Assets\Resources\Scripts\Modifier.cs" />
      <Compile Include="Assets\Resources\Scripts\Utility\ClipperLibrary.cs" />
      <Compile Include="Assets\Resources\Scripts\Utility\DrawLinesScript.cs" />
      <Compile Include="Assets\Resources\Scripts\Utility\InputKeys.cs" />
      <Compile Include="Assets\Resources\Scripts\Utility\PathFunctions.cs" />
+     <Compile Include="Assets\Resources\Scripts\Utility\Shape\Ellipse.cs" />
+     <Compile Include="Assets\Resources\Scripts\Utility\Shape\Shape.cs" />
      <Compile Include="Assets\Resources\Scripts\Utility\TestingBounds.cs" />
  <Reference Include="Facebook.Unity.Settings">
  <HintPath>C:/Users/PC/Documents/GitHub/Unity3D/SpaceShipAssembly2D/Library/FacebookSDK/Facebook.Unity.Settings.dll</HintPath>

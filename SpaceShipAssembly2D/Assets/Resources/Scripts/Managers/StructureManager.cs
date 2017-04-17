@@ -3,20 +3,22 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+using VecPath = System.Collections.Generic.List<UnityEngine.Vector2>;
+using VecPaths = System.Collections.Generic.List<System.Collections.Generic.List<UnityEngine.Vector2>>;
+
 public class StructureManager : MonoBehaviour {
 	private Hashtable modules = new Hashtable ();
 	private Rigidbody2D body;
 	private PolygonCollider2D poly;
 	private Vector2 center = new Vector2 ();
 
-
 	public int thrust { get; set; }
 	public int torque { get; set; }
 	public bool structureStateChanged { get; set; }
 
-	List<List<Vector2>> pathsOfStructure = new List<List<Vector2>> ();
-	List<List<Vector2>> pathsBuild = new List<List<Vector2>> ();
-	List<List<Vector2>> pathsDamage = new List<List<Vector2>> ();
+	VecPaths pathsOfStructure = new VecPaths ();
+	VecPaths pathsBuild = new VecPaths  ();
+	Damage pathsDamage = new Damage ();
 
 	void Start (){
 		structureStateChanged = false;
@@ -34,31 +36,10 @@ public class StructureManager : MonoBehaviour {
 			if (pathsBuild.Count > 0) {
 
 				//Builds the new path
-				pathsBuild = PathFunctions.Addition (ConvertToListList(poly), pathsBuild);
+				pathsBuild[0] = PathFunctions.Addition (ConvertColliderToVecPaths(poly), pathsBuild);
 
-				//Only one path was returned
-				if (pathsBuild.Count == 1) {
-					poly.SetPath (0, pathsBuild [0].ToArray ());
-				}
-
-
-				//*****
-				//Experiment Begin
-				//*****
-				else {
-					poly.pathCount = pathsBuild.Count;
-					int i = 0;
-
-					foreach (List<Vector2> path in pathsBuild) {
-						poly.SetPath (i, pathsBuild [i].ToArray ());
-						i++;
-					}
-
-				}
-				//*****
-				//Experiment End
-				//*****
-
+				SetPolyCollider(pathsBuild [0].ToArray ());
+				
 
 				//Clears the path for next time
 				pathsBuild.Clear ();
@@ -67,6 +48,10 @@ public class StructureManager : MonoBehaviour {
 
 			//Some thing or things have damaged the structure
 			if (pathsDamage.Count > 0) {
+
+				foreach (Damage damage in pathsDamage) {
+					
+				}
 				//PathFunctions.Subtraction (poly, pathsDamage);
 				pathsDamage.Clear ();
 			}
@@ -94,7 +79,7 @@ public class StructureManager : MonoBehaviour {
 
 
 	//State checkers, basically has anything changed since the last time the state was checked
-	//Not sure what I'm going to do with these right now..
+	//Not sure if I'm going to use these..
 	public void CheckState () {
 	}
 
@@ -131,9 +116,31 @@ public class StructureManager : MonoBehaviour {
 	// Utility
 	//
 
+	//TODO Creates new structures
+	public void CreateNewStructure (Vector2[] path){
+		Instantiate ();
+	}
+
+	//TODO set PolygonCollider2D to the Vector2[] provided
+	public void SetPolyCollider (Vector2[] path){
+		poly.SetPath (0, path);
+	}
+
+	//TODO take list of children of structure and create gameObjects for them
+	public void BuildShipManifest (){
+
+	}
+
+	//TODO Call children to check what their parent is
+	//After taking damage the structure may have split, children will need to know
+	// which of the new structures is now their parent object
+	public void CallChildCheckParent (){
+
+	}
+
 	//Converts provided Vector2 array to a Vector2 List
-	public List <Vector2> ConvertPathToList (Vector2[] path){
-		List <Vector2> temp = new List<Vector2> ();
+	public VecPath ConvertPointsToPath (Vector2[] path){
+		VecPath  temp = new VecPath ();
 		foreach (Vector2 point in path) {
 			temp.Add (point);
 		}
@@ -141,26 +148,33 @@ public class StructureManager : MonoBehaviour {
 	}
 
 	//Converts privided List<Vector2> to List<List<Vector2>>
-	public List<List<Vector2>> ConvertToListList(PolygonCollider2D cols){
+	public VecPaths  ConvertColliderToVecPaths (PolygonCollider2D cols){
 
-		List <List<Vector2>> listlist = new List<List<Vector2>> ();
+		VecPaths  vecPaths = new VecPaths  ();
 		for (int i = 0; i < cols.pathCount; i++) {
-			listlist.Add(ConvertPathToList(cols.GetPath(i)));
+			vecPaths.Add(ConvertPointsToPath(cols.GetPath(i)));
 		}
-		return listlist;
+		return vecPaths;
 	}
 
 	//Recieves paths to add to the structure
 	public void StructureAdd (Vector2[] toAdd) {
-		pathsBuild.Add (ConvertPathToList(toAdd));
+		pathsBuild.Add (ConvertPointsToPath(toAdd));
 		structureStateChanged = true;
 	}
 
 	//Receives paths to remove from the structure
-	public void StructureSubtract (Vector2[] damage) {
-		//pathsDamage.Add (damage);
-		//structureStateChanged = true;
+	public void StructureAddDamage (Damage damage) {
+		pathsDamage.Add (damage);
+		structureStateChanged = true;
 	}
+
+	//Convert Damage to Vector2[]
+	public void DamageToVector2Array (Damage damage){
+		Vector2[] path;
+
+	}
+
 
 	//Calculate the Center of the Polygon in world coordinates based on the path provided
 	public Vector2 CalcCenter (Vector2[] path) {

@@ -31,7 +31,7 @@ public static class PathFunctions {
 	 */
 
 	//Takes two VecPaths and combines them into a single Path if possible
-	public static VecPaths Addition(VecPaths mainPolys, VecPaths polygons){
+	public static VecPath Addition(VecPaths mainPolys, VecPaths polygons){
 
 
 		//this is going to be the result of the method
@@ -39,9 +39,6 @@ public static class PathFunctions {
 
 		//this will be the result of the algorithm (will be converted into VecPaths and stored in unitedPolygons)
 		Paths solution = new Paths();
-
-
-		Path allPolygonsPath;
 
 		Clipper clipper = new Clipper();
 
@@ -57,7 +54,7 @@ public static class PathFunctions {
 		clipper.Execute(ClipType.ctUnion, solution, PolyFillType.pftEvenOdd);
 
 		//Something to stop it from leaving those small paths completely overlapped by the larger path
-		solution = RemoveOverlappedPaths(solution);
+		solution[0] = RemoveOverlappedPaths(solution);
 
 		//Convert solution into VecPaths while removing the scaling
 		unitedPolygons = ConvertPathsToVecPaths (solution);
@@ -66,7 +63,7 @@ public static class PathFunctions {
 		unitedPolygons = RemoveClosePointsInPolygons(unitedPolygons);
 
 		//everything done
-		return unitedPolygons;
+		return unitedPolygons[0];
 	}
 
 	//TODO Subtraction function
@@ -126,15 +123,43 @@ public static class PathFunctions {
 		return solution;
 	}
 		
-	//TODO Remove totally overlapped paths
-	private static Paths RemoveOverlappedPaths (Paths paths){
-		Paths solution = new Paths ();
+
+	//TODO Remove totally overlapped paths.
+	//For now it just returns the largest area 
+	private static Path RemoveOverlappedPaths (Paths paths){
+		Path solution = new Path ();
+
+		Clipper clip = new Clipper ();
+
+
+		if (paths.Count > 1) {
+			double longest = 0;
+			int i = 0;
+			int numOfPath = -1;
+
+			foreach (Path path in paths) {
+				
+				double temp = Clipper.Area (path);
+
+				if (temp > longest) {
+					longest = temp;
+					numOfPath = i;
+				}
+
+				i++;
+
+			}
+
+			solution = paths [numOfPath];
+
+		} else {
+			solution = paths [0];
+		}
 
 
 
 		return solution;
 	}
-
 
 
 	//Simplifies the polygon, removing redundant vertices

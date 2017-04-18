@@ -55,12 +55,8 @@
      <Compile Include="Assets\Resources\Scripts\Managers\CameraManager.cs" />
      <Compile Include="Assets\Resources\Scripts\Managers\GameManager.cs" />
      <Compile Include="Assets\Resources\Scripts\Managers\InputManager.cs" />
-     <Compile Include="Assets\Resources\Scripts\Managers\Modules\Hull\WallManager.cs" />
-     <Compile Include="Assets\Resources\Scripts\Managers\Modules\ModuleManager.cs" />
-     <Compile Include="Assets\Resources\Scripts\Managers\PhysicalObjectManager.cs" />
      <Compile Include="Assets\Resources\Scripts\Managers\StructureManager.cs" />
      <Compile Include="Assets\Resources\Scripts\Managers\UIManager.cs" />
-     <Compile Include="Assets\Resources\Scripts\Modifier.cs" />
      <Compile Include="Assets\Resources\Scripts\Utility\ClipperLibrary.cs" />
      <Compile Include="Assets\Resources\Scripts\Utility\DrawLinesScript.cs" />
      <Compile Include="Assets\Resources\Scripts\Utility\InputKeys.cs" />

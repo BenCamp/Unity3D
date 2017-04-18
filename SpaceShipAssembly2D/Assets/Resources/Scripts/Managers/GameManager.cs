@@ -7,7 +7,11 @@ using UnityEngine.EventSystems;
 using System;
 
 
-public class GameManager : MonoBehaviour {
+public class GameManager : ManifestControl {
+
+	public static GameManager gm;
+	public CameraManager cam;
+	public UIManager ui;
 
 	private bool cameraFollowSelected;
 	private	bool paused;
@@ -21,29 +25,38 @@ public class GameManager : MonoBehaviour {
 	//Holds a list of the prefabs for loading
 	private Dictionary <string, GameObject> preFabList= new Dictionary<string, GameObject> ();
 
-	//Holds a list of all the gameobjects that aren't a child of another gameobject,
-	// organized by their ID
-	public Dictionary <int, GameObject> manifest = new Dictionary<int, GameObject> ();
-
 	private List<RaycastHit2D> hits = new List<RaycastHit2D> ();
 
 	private Collider2D[] cols;
 
 	public 	TestingBounds test;
 
-	public 	UIManager uiManager;
+	//Makes sure there is only one GameManager at a time
+	void Awake (){
+		if (gm == null){
+			DontDestroyOnLoad (gameObject);
+			gm = this;
+		} else if (gm != this) {
+			Destroy (gameObject);
+		}
+	}
+		
+	void Start (){  
+		
+		//Get the other singleton managers
+		cam = CameraManager.cam;
+		ui = UIManager.ui;
 
-	public	CameraManager cameraManager;
-
-
-
-	void Start (){
-		cameraManager = gameObject.GetComponent<CameraManager> ();
-		uiManager = GameObject.Find ("UI").GetComponent<UIManager> ();
+		//Set the state of the game
 		buildingStructure = false;
 		cameraFollowSelected = false;
 		paused = false;
 		placingModules = false;
+
+
+		PlaceChildrenInManifest ();
+
+		//For Testing
 		test = GameObject.Find ("BoundsTester").GetComponent<TestingBounds> ();
 	}
 
@@ -55,12 +68,12 @@ public class GameManager : MonoBehaviour {
 		}
 
 		if (selected != null) {
-			uiManager.UpdateText ("Selected Object: " + selected.gameObject.name
+			ui.UpdateText ("Selected Object: " + selected.gameObject.name
 			+ "\n"
-			+ cameraManager.CameraStatus ()
+			+ cam.CameraStatus ()
 			+ temporaryStatusMessage);
 		} else {
-			uiManager.UpdateText (cameraManager.CameraStatus ()
+			ui.UpdateText (cam.CameraStatus ()
 				+ temporaryStatusMessage);
 		}
 	}
@@ -71,13 +84,13 @@ public class GameManager : MonoBehaviour {
 
 			//The camera isn't already following something 
 			if (!cameraFollowSelected && selected != null) {
-				cameraManager.follow = selected;
+				cam.follow = selected;
 				cameraFollowSelected = true;
 			}
 
 			//The camera is already following something
 			else {
-				cameraManager.follow = null;
+				cam.follow = null;
 				cameraFollowSelected = false;
 			}
 
@@ -183,7 +196,7 @@ public class GameManager : MonoBehaviour {
 	private void SetSelected () {
 
 		//Check all the colliders under the pointer
-		foreach (RaycastHit2D hit in cameraManager.MousePoint ()){
+		foreach (RaycastHit2D hit in cam.MousePoint ()){
 
 			//The collider isn't the "brush"
 			if (hit.collider.gameObject.name != "BoundsTester")
@@ -235,23 +248,23 @@ public class GameManager : MonoBehaviour {
 		FileStream file = File.Open (Application.persistentDataPath + "/gameInfo.dat", FileMode.Open);
 		GameData data = new GameData ();
 
-		GameObject[] tempObjects = new GameObject[manifest.Count];
-		int[] keysList = new int[manifest.Keys.Count];
-		manifest.Keys.CopyTo (keysList, 0);
-
-		int i = 0;
-
-		foreach (int key in keysList) {
-			tempObjects [i] = manifest.TryGetValue (key);
-		}
-		data.physicalObjects = tempObjects;
+		data.physicalObjects = GetManifestArray();
 
 		bf.Serialize (file, data);
 		file.Close ();
 	}
 
 	public void Load () {
+		if (File.Exists (Application.persistentDataPath + "/gameInfo.dat")) {
+			BinaryFormatter bf = new BinaryFormatter ();
+			FileStream file = File.Open (Application.persistentDataPath + "/gameInfo.dat", FileMode.Open);
 
+			GameData data = (GameData) bf.Deserialize (file);
+
+			file.Close ();
+
+			manifest = data;
+		}
 	}
 }
 

@@ -2,10 +2,21 @@
 using System.Collections;
 
 public class CameraManager : MonoBehaviour {
+	public static CameraManager cam;
+
 	private Camera 				activeCamera;
 	private Vector3 			pos;
 	public 	GameObject 			follow;
 
+	//Makes sure there is only one CameraManager at a time
+	void Awake () {
+		if (cam == null) {
+			DontDestroyOnLoad (gameObject);
+			cam = this;
+		} else if (cam != this) {
+			Destroy (gameObject);
+		}
+	}
 
 	void Start () {
 		activeCamera = Camera.main;

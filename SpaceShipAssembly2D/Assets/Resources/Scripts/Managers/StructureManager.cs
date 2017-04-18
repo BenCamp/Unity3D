@@ -6,6 +6,7 @@ using System.Linq;
 using VecPath = System.Collections.Generic.List<UnityEngine.Vector2>;
 using VecPaths = System.Collections.Generic.List<System.Collections.Generic.List<UnityEngine.Vector2>>;
 
+//Removed state checkers until I need to do something with them..
 public class StructureManager : MonoBehaviour {
 	private Hashtable modules = new Hashtable ();
 	private Rigidbody2D body;
@@ -76,38 +77,6 @@ public class StructureManager : MonoBehaviour {
 
 	public void RightCommandGiven () {
 		body.AddTorque (-torque * Time.deltaTime);
-	}
-
-
-	//State checkers, basically has anything changed since the last time the state was checked
-	//Not sure if I'm going to use these..
-	public void CheckState () {
-	}
-
-	public void StructureCheckState () {
-	}
-
-	public void ConsoleCheckState () {
-	}
-
-	public void ConnectionCheckState () {
-	}
-
-	public void EngineCheckState () {
-	}
-
-	public void PowerCheckState () {
-	}
-
-	public void WeaponCheckState () {
-	}
-
-
-	//For Experimental purposes, final game should have selectable weapons
-	public void FireWeapons () {
-	}
-
-	public void CeaseFire () {
 	}
 		
 

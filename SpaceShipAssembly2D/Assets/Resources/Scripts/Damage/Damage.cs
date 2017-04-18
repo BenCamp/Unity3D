@@ -8,8 +8,6 @@ public abstract class Damage {
 	Vector2 origin;
 	double amount;
 
-	List<Modifier> modifier;
-
 	public Shape shape;
 
 	public void Hello () {

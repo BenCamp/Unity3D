@@ -3,7 +3,19 @@ using UnityEngine.UI;
 using System.Collections;
 
 public class UIManager : MonoBehaviour {
+
+	public static UIManager ui;
 	GameObject displayText;
+
+	void Awake (){
+		if (ui == null) {
+			DontDestroyOnLoad (gameObject);
+			ui = this;
+		} else if (ui != this) {
+			Destroy (gameObject);
+		}
+
+	}
 
 	void Start (){
 		foreach (Transform child in transform){

@@ -60,6 +60,7 @@
      <Compile Include="Assets\Resources\Scripts\Utility\ClipperLibrary.cs" />
      <Compile Include="Assets\Resources\Scripts\Utility\DrawLinesScript.cs" />
      <Compile Include="Assets\Resources\Scripts\Utility\InputKeys.cs" />
+     <Compile Include="Assets\Resources\Scripts\Utility\ManifestControl.cs" />
      <Compile Include="Assets\Resources\Scripts\Utility\PathFunctions.cs" />
      <Compile Include="Assets\Resources\Scripts\Utility\Shape\Ellipse.cs" />
      <Compile Include="Assets\Resources\Scripts\Utility\Shape\Shape.cs" />

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WallManager : MonoBehaviour {
+public class WallManager : ModuleManager {
 
 	// Use this for initialization
 	void Start () {

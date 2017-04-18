@@ -1,10 +1,10 @@
-﻿
-
-
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using System;
 
 
 public class GameManager : MonoBehaviour {
@@ -18,12 +18,21 @@ public class GameManager : MonoBehaviour {
 
 	private	GameObject selected;
 
+	//Holds a list of the prefabs for loading
+	private Dictionary <string, GameObject> preFabList= new Dictionary<string, GameObject> ();
+
+	//Holds a list of all the gameobjects that aren't a child of another gameobject,
+	// organized by their ID
+	private Dictionary <int, GameObject> manifest = new Dictionary<int, GameObject> ();
+
 	private List<RaycastHit2D> hits = new List<RaycastHit2D> ();
 
 	private Collider2D[] cols;
 
 	public 	TestingBounds test;
+
 	public 	UIManager uiManager;
+
 	public	CameraManager cameraManager;
 
 
@@ -216,4 +225,42 @@ public class GameManager : MonoBehaviour {
 			buildingStructure = true;
 		}
 	}
+
+	public void Save (){
+		BinaryFormatter bf = new BinaryFormatter ();
+		FileStream file = File.Open (Application.persistentDataPath + "/gameInfo.dat", FileMode.Open);
+
+	}
+
+	public void Load () {
+
+	}
+}
+
+
+//
+//Serializable Classes for saving and loading game data
+//
+
+[Serializable]
+class GameData
+{
+	public List<PhysicalObjectData> physicalObjects = new List<PhysicalObjectData>();
+
+
+}
+
+
+[Serializable]
+public class PhysicalObjectData {
+
+	public string name;
+	public Vector2 center;
+	public float rotation;
+	public float xVelocity;
+	public float yVelocity;
+	public List<Modifier> modifiers;
+	public List<Vector2[]> colliderPaths;
+	public List <PhysicalObjectData> manifest;
+
 }

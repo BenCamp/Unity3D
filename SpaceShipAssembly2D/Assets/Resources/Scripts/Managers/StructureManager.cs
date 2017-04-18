@@ -6,7 +6,7 @@ using System.Linq;
 using VecPath = System.Collections.Generic.List<UnityEngine.Vector2>;
 using VecPaths = System.Collections.Generic.List<System.Collections.Generic.List<UnityEngine.Vector2>>;
 
-public class StructureManager : MonoBehaviour {
+public class StructureManager : PhysicalObjectManager {
 	private Hashtable modules = new Hashtable ();
 	private Rigidbody2D body;
 	private PolygonCollider2D poly;
@@ -18,7 +18,7 @@ public class StructureManager : MonoBehaviour {
 
 	VecPaths pathsOfStructure = new VecPaths ();
 	VecPaths pathsBuild = new VecPaths  ();
-	Damage pathsDamage = new Damage ();
+	List <Damage> pathsDamage = new List <Damage> ();
 
 	void Start (){
 		structureStateChanged = false;
@@ -118,7 +118,7 @@ public class StructureManager : MonoBehaviour {
 
 	//TODO Creates new structures
 	public void CreateNewStructure (Vector2[] path){
-		Instantiate ();
+		
 	}
 
 	//TODO set PolygonCollider2D to the Vector2[] provided

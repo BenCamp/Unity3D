@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ModuleManager : MonoBehaviour {
+public class ModuleManager : PhysicalObjectManager {
 
 	// Use this for initialization
 	void Start () {

@@ -4,6 +4,6 @@ using UnityEngine;
 
 public abstract class Shape {
 
-	public abstract Vector2[] GetVecPath ();
+	public abstract Vector2[] GetVecPath (Vector2 origin);
 
 }

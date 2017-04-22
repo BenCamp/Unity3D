@@ -1,14 +1,12 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Resources\Scripts\Utility\ManifestControl.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Resources\Scripts\Deflator.cs">
     <Files>
-      <File FileName="Assets\Resources\Scripts\Utility\TestingBounds.cs" Line="1" Column="1" />
-      <File FileName="Assets\Resources\Scripts\Managers\GameManager.cs" Line="251" Column="42" />
-      <File FileName="Assets\Resources\Scripts\Managers\StructureManager.cs" Line="11" Column="47" />
-      <File FileName="Assets\Resources\Scripts\Utility\PathFunctions.cs" Line="128" Column="45" />
-      <File FileName="Assets\Resources\Scripts\Managers\CameraManager.cs" Line="62" Column="9" />
-      <File FileName="Assets\Resources\Scripts\Damage\Damage.cs" Line="9" Column="16" />
-      <File FileName="Assets\Resources\Scripts\Utility\ManifestControl.cs" Line="26" Column="38" />
+      <File FileName="Assets\Resources\Scripts\MyComponent.cs" Line="13" Column="36" />
+      <File FileName="Assets\Resources\Scripts\Deflator.cs" Line="57" Column="38" />
+      <File FileName="Assets\Resources\Scripts\SaveableNotParent.cs" Line="11" Column="3" />
+      <File FileName="Assets\Resources\Scripts\SaveableObject.cs" Line="11" Column="27" />
+      <File FileName="Assets\Resources\Scripts\SaveableParent.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

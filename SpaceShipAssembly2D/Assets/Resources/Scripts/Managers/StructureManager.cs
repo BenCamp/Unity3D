@@ -8,7 +8,6 @@ using VecPaths = System.Collections.Generic.List<System.Collections.Generic.List
 
 //Removed state checkers until I need to do something with them..
 public class StructureManager : MonoBehaviour {
-	private Hashtable modules = new Hashtable ();
 	private Rigidbody2D body;
 	private PolygonCollider2D poly;
 	private Vector2 center = new Vector2 ();
@@ -17,10 +16,9 @@ public class StructureManager : MonoBehaviour {
 	public int torque { get; set; }
 	public bool structureStateChanged { get; set; }
 
-	VecPaths pathsOfStructure = new VecPaths ();
-	VecPaths pathsBuild = new VecPaths  ();
-	List <Damage> pathsDamage = new List <Damage> ();
-	Dictionary <int, GameObject> manifest = new Dictionary<int, GameObject> ();
+	private VecPaths pathsOfStructure = new VecPaths ();
+	private VecPaths pathsBuild = new VecPaths  ();
+	private List <Damage> pathsDamage = new List <Damage> ();
 	    
 	void Start (){
 		structureStateChanged = false;

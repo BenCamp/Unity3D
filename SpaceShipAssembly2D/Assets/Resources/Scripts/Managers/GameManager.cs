@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 using System;
 
 
-public class GameManager : ManifestControl {
+public class GameManager : MonoBehaviour {
 
 	public static GameManager gm;
 	public CameraManager cam;
@@ -53,8 +53,7 @@ public class GameManager : ManifestControl {
 		paused = false;
 		placingModules = false;
 
-
-		PlaceChildrenInManifest ();
+		//TODO Create children from loaded manifest
 
 		//For Testing
 		test = GameObject.Find ("BoundsTester").GetComponent<TestingBounds> ();
@@ -245,10 +244,10 @@ public class GameManager : ManifestControl {
 	// I'm doing it like this for the sake of simplicity.
 	public void Save (){
 		BinaryFormatter bf = new BinaryFormatter ();
-		FileStream file = File.Open (Application.persistentDataPath + "/gameInfo.dat", FileMode.Open);
+		FileStream file = File.Create (Application.persistentDataPath + "/gameInfo.dat");
 		GameData data = new GameData ();
 
-		data.physicalObjects = GetManifestArray();
+		//data.physicalObjects;
 
 		bf.Serialize (file, data);
 		file.Close ();
@@ -263,7 +262,7 @@ public class GameManager : ManifestControl {
 
 			file.Close ();
 
-			manifest = data;
+			//manifest = ConvertArrayToDictionary(data.physicalObjects);
 		}
 	}
 }
@@ -276,5 +275,14 @@ public class GameManager : ManifestControl {
 [Serializable]
 class GameData
 {
-	public GameObject[] physicalObjects;
+	private bool cameraFollowSelected;
+	private	bool paused;
+	private bool placingModules;
+	private	bool buildingStructure;
+
+	//Reset the length of the temporaryStatusMessage after loading
+	private string temporaryStatusMessage;
+	private	GameObject selected;
+	public List<SaveableObject> physicalObjects;
+
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 using System;
 
 [Serializable]
-public class SaveableObject {
+public class SaveableObject : MonoBehaviour{
 	
 	public bool canBeParent;
 

@@ -54,9 +54,9 @@
      <Compile Include="Assets\Resources\Scripts\Damage\Kinetic.cs" />
      <Compile Include="Assets\Resources\Scripts\Deflator.cs" />
      <Compile Include="Assets\Resources\Scripts\Field.cs" />
+     <Compile Include="Assets\Resources\Scripts\Inflator.cs" />
      <Compile Include="Assets\Resources\Scripts\Managers\CameraManager.cs" />
      <Compile Include="Assets\Resources\Scripts\Managers\GameManager.cs" />
-     <Compile Include="Assets\Resources\Scripts\Managers\GameObjectManager.cs" />
      <Compile Include="Assets\Resources\Scripts\Managers\InputManager.cs" />
      <Compile Include="Assets\Resources\Scripts\Managers\StructureManager.cs" />
      <Compile Include="Assets\Resources\Scripts\Managers\UIManager.cs" />
@@ -71,6 +71,24 @@
      <Compile Include="Assets\Resources\Scripts\Utility\Shape\Ellipse.cs" />
      <Compile Include="Assets\Resources\Scripts\Utility\Shape\Shape.cs" />
      <Compile Include="Assets\Resources\Scripts\Utility\TestingBounds.cs" />
+     <Compile Include="Assets\Resources\Scripts\Utility\Unity Save Load Utility\Attributes\USLUAttributes.cs" />
+     <Compile Include="Assets\Resources\Scripts\Utility\Unity Save Load Utility\ExampleScriptsAndClasses\TestClass.cs" />
+     <Compile Include="Assets\Resources\Scripts\Utility\Unity Save Load Utility\ExampleScriptsAndClasses\TestScript.cs" />
+     <Compile Include="Assets\Resources\Scripts\Utility\Unity Save Load Utility\Non-Mono Classes\ObjectComponent.cs" />
+     <Compile Include="Assets\Resources\Scripts\Utility\Unity Save Load Utility\Non-Mono Classes\SaveGame.cs" />
+     <Compile Include="Assets\Resources\Scripts\Utility\Unity Save Load Utility\Non-Mono Classes\SceneObject.cs" />
+     <Compile Include="Assets\Resources\Scripts\Utility\Unity Save Load Utility\ObjectIdentifier.cs" />
+     <Compile Include="Assets\Resources\Scripts\Utility\Unity Save Load Utility\PersistenceMarker.cs" />
+     <Compile Include="Assets\Resources\Scripts\Utility\Unity Save Load Utility\SaveLoad.cs" />
+     <Compile Include="Assets\Resources\Scripts\Utility\Unity Save Load Utility\SaveLoadMenu.cs" />
+     <Compile Include="Assets\Resources\Scripts\Utility\Unity Save Load Utility\SaveLoadUtility.cs" />
+     <Compile Include="Assets\Resources\Scripts\Utility\Unity Save Load Utility\Surrogates\Color32Surrogate.cs" />
+     <Compile Include="Assets\Resources\Scripts\Utility\Unity Save Load Utility\Surrogates\ColorSurrogate.cs" />
+     <Compile Include="Assets\Resources\Scripts\Utility\Unity Save Load Utility\Surrogates\QuaternionSurrogate.cs" />
+     <Compile Include="Assets\Resources\Scripts\Utility\Unity Save Load Utility\Surrogates\Vector2Surrogate.cs" />
+     <Compile Include="Assets\Resources\Scripts\Utility\Unity Save Load Utility\Surrogates\Vector3Surrogate.cs" />
+     <Compile Include="Assets\Resources\Scripts\Utility\Unity Save Load Utility\Surrogates\Vector4Surrogate.cs" />
+     <Compile Include="Assets\Resources\Scripts\Utility\Unity Save Load Utility\Utilities\TypeSystem.cs" />
  <Reference Include="Facebook.Unity.Settings">
  <HintPath>C:/Users/PC/Documents/GitHub/Unity3D/SpaceShipAssembly2D/Library/FacebookSDK/Facebook.Unity.Settings.dll</HintPath>
  </Reference>

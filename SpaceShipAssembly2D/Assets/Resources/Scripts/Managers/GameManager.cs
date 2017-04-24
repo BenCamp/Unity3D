@@ -5,7 +5,7 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using System;
-
+using LitJson;
 
 public class GameManager : MonoBehaviour {
 
@@ -13,7 +13,7 @@ public class GameManager : MonoBehaviour {
 	public CameraManager cam;
 	public UIManager ui;
 
-	private bool cameraFollowSelected;
+	public bool cameraFollowSelected = true;
 	private	bool paused;
 	private bool placingModules;
 	private	bool buildingStructure;
@@ -21,6 +21,7 @@ public class GameManager : MonoBehaviour {
 	private string temporaryStatusMessage;
 
 	private	GameObject selected;
+	public GameObject world;
 
 	//Holds a list of the prefabs for loading
 	private Dictionary <string, GameObject> preFabList= new Dictionary<string, GameObject> ();
@@ -52,6 +53,9 @@ public class GameManager : MonoBehaviour {
 		cameraFollowSelected = false;
 		paused = false;
 		placingModules = false;
+
+		//Get the world
+		world = GameObject.Find("World");
 
 		//TODO Create children from loaded manifest
 
@@ -106,7 +110,6 @@ public class GameManager : MonoBehaviour {
 	//These functions determine the actions taken by the GameManager after
 	// the InputManager registers which key/button/axis is recieved
 	//TODO Add logic for other states of the game.
-
 	public void PrimaryButtonPressed () {
 		//Mouse Pointer is over a GUI element
 		if (EventSystem.current.IsPointerOverGameObject ()) {
@@ -146,11 +149,9 @@ public class GameManager : MonoBehaviour {
 			}
 		}
 	}
-
 	public void SecondaryButttonPressed () {
 
 	}
-
 	public void UpCamButtonPressed () {
 
 	}
@@ -239,31 +240,60 @@ public class GameManager : MonoBehaviour {
 	}
 
 	//TODO 
-	//Saves just the manifest for now. I'll add other gameinfo later and figure out a better 
-	// way to save then just grabbing the whole gameobject for stuff in the world. For now,
-	// I'm doing it like this for the sake of simplicity.
+	//For now, I'm doing it like this for the sake of simplicity.
+	//If at all possible, I need to find a way to do this without grabbing EVERYTHING...
 	public void Save (){
-		BinaryFormatter bf = new BinaryFormatter ();
-		FileStream file = File.Create (Application.persistentDataPath + "/gameInfo.dat");
+
 		GameData data = new GameData ();
 
-		//data.physicalObjects;
+		//Get GameManager's state
+		data.cameraFollowSelected 	= cameraFollowSelected;
+		data.paused 				= paused;
+		data.placingModules 		= placingModules;
+		data.buildingStructure 		= buildingStructure;
+		data.temporaryStatusMessage = temporaryStatusMessage;
 
-		bf.Serialize (file, data);
-		file.Close ();
+
+		//Save the World!
+		data.world = Deflator.Deflate(world);
+
+
+		//Destroy The WORLD!!
+		if (world.gameObject.transform.childCount > 0) {
+			for (int i = 0; i < world.gameObject.transform.childCount; i++) {
+				Destroy (world.gameObject.transform.GetChild (i).gameObject);
+			}
+		}
+		Destroy (world);
+
+
+		//Turn all data into Json string
+		JsonData jsonWorld = JsonMapper.ToJson (data);
+		Debug.Log (jsonWorld.ToString());
+		File.WriteAllText (Application.persistentDataPath + "/gameInfo.dat", jsonWorld.ToString());
+
+
 	}
 
+	//TODO Inflator
 	public void Load () {
+		/*
 		if (File.Exists (Application.persistentDataPath + "/gameInfo.dat")) {
-			BinaryFormatter bf = new BinaryFormatter ();
-			FileStream file = File.Open (Application.persistentDataPath + "/gameInfo.dat", FileMode.Open);
+			//Inflator inflator = new Inflator ();
 
-			GameData data = (GameData) bf.Deserialize (file);
+			JsonData jsonWorld = JsonMapper.ToObject (File.ReadAllText(Application.persistentDataPath + "/gameInfo.dat"));				
+			GameData data = jsonWorld.<GameData>(beforeJson);
 
-			file.Close ();
 
-			//manifest = ConvertArrayToDictionary(data.physicalObjects);
+			//Set GameManager's state
+			cameraFollowSelected 	= data.cameraFollowSelected;
+			paused 					= data.paused;
+			placingModules 			= data.placingModules;
+			buildingStructure 		= data.buildingStructure;
+			temporaryStatusMessage 	= data.temporaryStatusMessage;
+			world 					= Inflator.Inflate(data.world);
 		}
+		*/
 	}
 }
 
@@ -275,14 +305,13 @@ public class GameManager : MonoBehaviour {
 [Serializable]
 class GameData
 {
-	private bool cameraFollowSelected;
-	private	bool paused;
-	private bool placingModules;
-	private	bool buildingStructure;
+	public bool cameraFollowSelected;
+	public	bool paused;
+	public bool placingModules;
+	public	bool buildingStructure;
 
 	//Reset the length of the temporaryStatusMessage after loading
-	private string temporaryStatusMessage;
-	private	GameObject selected;
-	public List<SaveableObject> physicalObjects;
+	public string temporaryStatusMessage;
+	public SaveableObject world;
 
 }

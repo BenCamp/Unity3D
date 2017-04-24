@@ -2,12 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Deflator {
+public static class Deflator {
 
 
 	//TODO
 	//TODO Hmmm.. kinda messy
-	public SaveableObject Deflate (GameObject go){
+	public static SaveableObject Deflate (GameObject go){
+
+		//go doesn't exist
+		if (go == null) {
+			return null;
+		}
+
 		// go is not a SaveableObject
 		if (go.GetComponent<SaveableObject>() == null) {
 			return null;
@@ -15,21 +21,18 @@ public class Deflator {
 
 		// go is a SaveableObject
 		else {
-			
-			//To add the attributes
-			GameObjectManager gm = go.GetComponent<GameObjectManager> ();
 
 			// go is a SaveableParent Object, has a manifest
 			if (go.GetComponent<SaveableObject> ().canBeParent) {
-				SaveableParent soParent = GetManifest (go);
-
+				SaveableParent soParent = (SaveableParent)go.GetComponent <SaveableObject> ();
+				soParent.manifest = GetManifest (go);
 
 				soParent.components = GetMyComponents (go);
 
 				return soParent;
 			} 
 
-			// Go is a SaveableNotParent Object
+			// go is a SaveableNotParent Object
 			else {
 				SaveableNotParent soNotParent = (SaveableNotParent)go.GetComponent <SaveableObject> ();
 
@@ -45,11 +48,11 @@ public class Deflator {
 	//Utility
 	//
 
-	private List<MyComponent> GetMyComponents (GameObject go){
+	private static List<MyComponent> GetMyComponents (GameObject go){
 		
 		List<MyComponent> solution = new List<MyComponent> ();
 
-		Component[] thisObjectsComponents = go.GetComponents ();
+		Component[] thisObjectsComponents = go.GetComponents(typeof(Component));
 		MyComponent myComponent;
 
 		for (int i = 0; i < thisObjectsComponents.Length; i++) {
@@ -62,7 +65,7 @@ public class Deflator {
 	}
 
 
-	private List <SaveableObject> GetManifest (GameObject go){
+	private static List <SaveableObject> GetManifest (GameObject go){
 
 		List <SaveableObject> solution = new List <SaveableObject> ();
 

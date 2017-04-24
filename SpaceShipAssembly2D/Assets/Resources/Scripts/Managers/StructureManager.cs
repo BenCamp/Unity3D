@@ -8,17 +8,17 @@ using VecPaths = System.Collections.Generic.List<System.Collections.Generic.List
 
 //Removed state checkers until I need to do something with them..
 public class StructureManager : MonoBehaviour {
-	private Rigidbody2D body;
-	private PolygonCollider2D poly;
-	private Vector2 center = new Vector2 ();
+	public Rigidbody2D body;
+	public PolygonCollider2D poly;
+	public Vector2 center = new Vector2 ();
 
 	public int thrust { get; set; }
 	public int torque { get; set; }
 	public bool structureStateChanged { get; set; }
 
-	private VecPaths pathsOfStructure = new VecPaths ();
-	private VecPaths pathsBuild = new VecPaths  ();
-	private List <Damage> pathsDamage = new List <Damage> ();
+	public VecPaths pathsOfStructure = new VecPaths ();
+	public VecPaths pathsBuild = new VecPaths  ();
+	public List <Damage> pathsDamage = new List <Damage> ();
 	    
 	void Start (){
 		structureStateChanged = false;

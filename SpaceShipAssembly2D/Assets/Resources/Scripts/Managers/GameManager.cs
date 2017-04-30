@@ -5,7 +5,6 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using System;
-using LitJson;
 
 public class GameManager : MonoBehaviour {
 
@@ -176,7 +175,11 @@ public class GameManager : MonoBehaviour {
 	public void RightButtonPressed () {
 
 	}
-
+	public void FireButtonPressed (){
+		if (selected != null) {
+			selected.GetComponent<StructureManager> ().FireCommandGiven();
+		}
+	}
 
 	//
 	//Utility functions
@@ -238,80 +241,4 @@ public class GameManager : MonoBehaviour {
 			buildingStructure = true;
 		}
 	}
-
-	//TODO 
-	//For now, I'm doing it like this for the sake of simplicity.
-	//If at all possible, I need to find a way to do this without grabbing EVERYTHING...
-	public void Save (){
-
-		GameData data = new GameData ();
-
-		//Get GameManager's state
-		data.cameraFollowSelected 	= cameraFollowSelected;
-		data.paused 				= paused;
-		data.placingModules 		= placingModules;
-		data.buildingStructure 		= buildingStructure;
-		data.temporaryStatusMessage = temporaryStatusMessage;
-
-
-		//Save the World!
-		data.world = Deflator.Deflate(world);
-
-
-		//Destroy The WORLD!!
-		if (world.gameObject.transform.childCount > 0) {
-			for (int i = 0; i < world.gameObject.transform.childCount; i++) {
-				Destroy (world.gameObject.transform.GetChild (i).gameObject);
-			}
-		}
-		Destroy (world);
-
-
-		//Turn all data into Json string
-		JsonData jsonWorld = JsonMapper.ToJson (data);
-		Debug.Log (jsonWorld.ToString());
-		File.WriteAllText (Application.persistentDataPath + "/gameInfo.dat", jsonWorld.ToString());
-
-
-	}
-
-	//TODO Inflator
-	public void Load () {
-		/*
-		if (File.Exists (Application.persistentDataPath + "/gameInfo.dat")) {
-			//Inflator inflator = new Inflator ();
-
-			JsonData jsonWorld = JsonMapper.ToObject (File.ReadAllText(Application.persistentDataPath + "/gameInfo.dat"));				
-			GameData data = jsonWorld.<GameData>(beforeJson);
-
-
-			//Set GameManager's state
-			cameraFollowSelected 	= data.cameraFollowSelected;
-			paused 					= data.paused;
-			placingModules 			= data.placingModules;
-			buildingStructure 		= data.buildingStructure;
-			temporaryStatusMessage 	= data.temporaryStatusMessage;
-			world 					= Inflator.Inflate(data.world);
-		}
-		*/
-	}
-}
-
-
-//
-//Serializable Classes for saving and loading game data
-//
-
-[Serializable]
-class GameData
-{
-	public bool cameraFollowSelected;
-	public	bool paused;
-	public bool placingModules;
-	public	bool buildingStructure;
-
-	//Reset the length of the temporaryStatusMessage after loading
-	public string temporaryStatusMessage;
-	public SaveableObject world;
-
 }

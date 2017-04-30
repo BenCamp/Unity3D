@@ -52,18 +52,11 @@
      <Compile Include="Assets\Resources\Scripts\Damage\Environment.cs" />
      <Compile Include="Assets\Resources\Scripts\Damage\Explosive.cs" />
      <Compile Include="Assets\Resources\Scripts\Damage\Kinetic.cs" />
-     <Compile Include="Assets\Resources\Scripts\Deflator.cs" />
-     <Compile Include="Assets\Resources\Scripts\Field.cs" />
-     <Compile Include="Assets\Resources\Scripts\Inflator.cs" />
      <Compile Include="Assets\Resources\Scripts\Managers\CameraManager.cs" />
      <Compile Include="Assets\Resources\Scripts\Managers\GameManager.cs" />
      <Compile Include="Assets\Resources\Scripts\Managers\InputManager.cs" />
      <Compile Include="Assets\Resources\Scripts\Managers\StructureManager.cs" />
      <Compile Include="Assets\Resources\Scripts\Managers\UIManager.cs" />
-     <Compile Include="Assets\Resources\Scripts\MyComponent.cs" />
-     <Compile Include="Assets\Resources\Scripts\SaveableNotParent.cs" />
-     <Compile Include="Assets\Resources\Scripts\SaveableObject.cs" />
-     <Compile Include="Assets\Resources\Scripts\SaveableParent.cs" />
      <Compile Include="Assets\Resources\Scripts\Utility\ClipperLibrary.cs" />
      <Compile Include="Assets\Resources\Scripts\Utility\DrawLinesScript.cs" />
      <Compile Include="Assets\Resources\Scripts\Utility\InputKeys.cs" />
@@ -89,6 +82,9 @@
      <Compile Include="Assets\Resources\Scripts\Utility\Unity Save Load Utility\Surrogates\Vector3Surrogate.cs" />
      <Compile Include="Assets\Resources\Scripts\Utility\Unity Save Load Utility\Surrogates\Vector4Surrogate.cs" />
      <Compile Include="Assets\Resources\Scripts\Utility\Unity Save Load Utility\Utilities\TypeSystem.cs" />
+     <Compile Include="Assets\Resources\Scripts\Weapons\EnergyWeapon.cs" />
+     <Compile Include="Assets\Resources\Scripts\Weapons\FireControl.cs" />
+     <Compile Include="Assets\Resources\Scripts\Weapons\MaxRange.cs" />
  <Reference Include="Facebook.Unity.Settings">
  <HintPath>C:/Users/PC/Documents/GitHub/Unity3D/SpaceShipAssembly2D/Library/FacebookSDK/Facebook.Unity.Settings.dll</HintPath>
  </Reference>

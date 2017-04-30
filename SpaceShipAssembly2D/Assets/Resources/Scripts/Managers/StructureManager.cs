@@ -77,7 +77,11 @@ public class StructureManager : MonoBehaviour {
 		body.AddTorque (-torque * Time.deltaTime);
 	}
 		
-
+	public void FireCommandGiven() {
+		foreach (FireControl child in gameObject.transform.GetComponentsInChildren<FireControl>()) {
+			child.FireCommandGiven ();
+		}
+	}
 
 
 	//

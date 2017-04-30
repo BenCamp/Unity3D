@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class InputKeys {
-	public	KeyCode			primary		{ get; set; }	
+	public 	KeyCode		primary	{ get; set; }	
+	public 	KeyCode		fire 	{ get; set; }
 	//TODO Add other keys
 
 	public InputKeys () {
 		
 		primary = KeyCode.Mouse0;
+		fire 	= KeyCode.Space;
 		//TODO Add other key defaults
 	}
 

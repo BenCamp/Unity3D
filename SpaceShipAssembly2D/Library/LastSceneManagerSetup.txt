@@ -1,5 +1,4 @@
 sceneSetups:
-- path: Assets/Resources/Scripts/Utility/Unity Save Load Utility/Scenes/Save Load
-    Test.unity
+- path: Assets/Scenes/DevelopmentScene.unity
   isLoaded: 1
   isActive: 1

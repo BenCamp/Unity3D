@@ -22,6 +22,8 @@ public class InputManager : MonoBehaviour {
 			}
 
 			//TODO Add other Keys
+			if (Input.GetKeyDown(keys.fire)){
+				gameManager.
 		}
 	}
 

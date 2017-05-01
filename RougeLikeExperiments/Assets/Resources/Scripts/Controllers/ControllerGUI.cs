@@ -17,7 +17,8 @@ using UnityEngine;
 
 public class ControllerGUI : MonoBehaviour {
 
-	private Message currentScene = new Message();
+
+	public Message messageCurrentScene = new Message();
 
 	public delegate void ActionClick (Message message);
 
@@ -35,11 +36,22 @@ public class ControllerGUI : MonoBehaviour {
 		}
 	}
 
+	void OnEnable (){
+		//Enable Listeners for events
+		ControllerGame.EventChangeScene += EventChangeScene;
+	}
+
+	void OnDisable (){
+		//Disable Listeners for events
+		ControllerGame.EventChangeScene -= EventChangeScene;
+	}
+
+
 	void OnGUI (){
 		
-		switch (currentScene.scene.ToString()){
+		switch (messageCurrentScene.scene.ToString()){
 		case "SCENE_ProgramLaunched":
-			if (currentScene.data == "splash") {
+			if (messageCurrentScene.data == "splash") {
 				GUI.Label (new Rect (Screen.width / 2 - 100, Screen.height / 2 - 15, 200, 30), "Splash Screen");
 				if (GUI.Button (new Rect (Screen.width / 2 - 300, 5, 200, 30), "Go to Next Screen")) {
 					if (EventGUI != null) {
@@ -47,7 +59,7 @@ public class ControllerGUI : MonoBehaviour {
 					}
 				}
 			} 
-			else if (currentScene.data == "title") {
+			else if (messageCurrentScene.data == "title") {
 				GUI.Label (new Rect (Screen.width / 2 - 100, Screen.height / 2 - 15, 200, 30), "Title Screen");
 				if (GUI.Button (new Rect (Screen.width / 2 - 300, 5, 200, 30), "Move to Next Scene")) {
 					if (EventGUI != null) {
@@ -121,5 +133,9 @@ public class ControllerGUI : MonoBehaviour {
 			}
 			break;
 		}
+	}
+
+	void EventChangeScene (Message message){
+		messageCurrentScene = message;
 	}
 }

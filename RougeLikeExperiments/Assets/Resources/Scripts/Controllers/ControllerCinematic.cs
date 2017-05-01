@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class ControllerCinematic : MonoBehaviour {
 
+
+	public Message messageCurrentScene = new Message();
+
 	public static ControllerCinematic controllerCinematic;
 
 	public delegate void Status (Message message);
@@ -17,5 +20,19 @@ public class ControllerCinematic : MonoBehaviour {
 		} else {
 			Destroy (gameObject);
 		}
+	}
+
+	void OnEnable (){
+		//Enable Listeners for events
+		ControllerGame.EventChangeScene += EventChangeScene;
+	}
+
+	void OnDisable (){
+		//Disable Listeners for events
+		ControllerGame.EventChangeScene -= EventChangeScene;
+	}
+
+	void EventChangeScene (Message message){
+		messageCurrentScene = message;
 	}
 }

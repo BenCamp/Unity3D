@@ -79,6 +79,9 @@ public class ControllerGame : MonoBehaviour {
 
 	//Cursor cursorMenu;
 
+	public delegate void ChangeScene (Message message);
+
+	public static event ChangeScene EventChangeScene;
 
 	/*
 	 * MonoBehaviour Classes
@@ -117,13 +120,12 @@ public class ControllerGame : MonoBehaviour {
 		*	SET isIntroFinished to FALSE
 		*	SET isBuilderWorldFinished to FALSE
 		*/
-
 		isMenuOpen = true;
 		isGamePaused = true;
 		isIntroFinished = true;
 		isBuilderWorldFinished = true;
 		/*LOAD SCENE_ProgramLaunched
-		 *	TO UI: SHOW screenSplash
+		 *	TO ControllerCinematic: SHOW screenSplash
 		 *	WAIT for PreparerGame to return bool (This class might be unnecessary if the game doesn't require any heavy loading, in which case, just delay for a time)
 		 *		User: Furiously clicking and pressing keys to skip
 		 *		Us: Laughing at the futility
@@ -131,14 +133,14 @@ public class ControllerGame : MonoBehaviour {
 		 *			BREAK out of WAIT
 		 *		PreparerGame RETURNED FALSE
 		 *			Error (Program Launch: PreparerGame exploded during the Splash Screen)
-		 *	TO UI: CLOSE screenSplash
-		 *	TO UI: SHOW screenTitle
+		 *	TO ControllerCinematic: CLOSE screenSplash
+		 *	TO ControllerCinematic: SHOW screenTitle
 		 *	WAIT for user to Input something
 		 *		Error RETURNED from UI
 		 *			Error (Program Launch: UI exploded during Title Screen)
 		 *		Input registered
 		 *			BREAK out of WAIT
-		 *	TO UI: CLOSE screenTitle
+		 *	TO ControllerCinematic: CLOSE screenTitle
 		 */
 		/*LOAD SCENE_MenuStart
 		 *
@@ -159,11 +161,11 @@ public class ControllerGame : MonoBehaviour {
 				Debug.LogError ("ControllerGame.Update.isMenuOpen:TRUE: There shouldn't be any circumstance that isMenuOpen is true if you aren't paused");
 				Application.Quit ();
 			}
-			/*	UI is showing screenSplash or screenTitle
-		 	 *		Error (ControllerGame.Update.isMenuOpen:TRUE: UI showing Splash or Title screen when it shouldn't)
+			/*	ControllerCinematic is showing screenSplash or screenTitle
+		 	 *		Error (ControllerGame.Update.isMenuOpen:TRUE: ControllerCinematic showing Splash or Title screen when it shouldn't)
 		 	 */
-			if (messageGUI.scene == "SCENE_ProgramLaunched") {
-				Debug.LogError ("ControllerGame.Update.isMenuOpen:TRUE: UI showing Splash or Title screen when it shouldn't");
+			if (messageCinematic.scene == "SCENE_ProgramLaunched") {
+				Debug.LogError ("ControllerGame.Update.isMenuOpen:TRUE: ControllerCinematic showing Splash or Title screen when it shouldn't");
 				Application.Quit ();
 			}
 			/*	In SCENE_MenuStart
@@ -301,7 +303,11 @@ public class ControllerGame : MonoBehaviour {
 					isGamePaused = false;
 					break;
 				case "start":
-
+					messageGUI = new Message ();								
+					SceneManager.LoadScene (1);
+					if (EventChangeScene != null) {
+						EventChangeScene (new Message("SCENE_ProgramLaunched", "splash"));
+					}
 					break;
 
 				default:

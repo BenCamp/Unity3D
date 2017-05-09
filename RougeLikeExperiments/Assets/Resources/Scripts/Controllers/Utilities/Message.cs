@@ -15,17 +15,17 @@ using UnityEngine;
 
 public class Message {
 
+	/***Variables***/
 	public string scene { get; set; }
 	public string data { get; set; }
 
+	/***Constructors***/
 	public Message (){
 		scene = "";
 		data = "";
 	}
-
 	public Message (string scene, string data){
 		this.scene = scene;
 		this.data = data;
 	}
-
 }

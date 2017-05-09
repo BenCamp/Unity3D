@@ -15,20 +15,22 @@ Platform assembly: C:\Users\PC\Documents\GitHub\Unity3D\RougeLikeExperiments\Bui
 Loading C:\Users\PC\Documents\GitHub\Unity3D\RougeLikeExperiments\Builds\build0.0.0.2\RougeExperiment_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
 Platform assembly: C:\Users\PC\Documents\GitHub\Unity3D\RougeLikeExperiments\Builds\build0.0.0.2\RougeExperiment_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
 Loading C:\Users\PC\Documents\GitHub\Unity3D\RougeLikeExperiments\Builds\build0.0.0.2\RougeExperiment_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
-- Completed reload, in  0.020 seconds
+- Completed reload, in  0.021 seconds
 Platform assembly: C:\Users\PC\Documents\GitHub\Unity3D\RougeLikeExperiments\Builds\build0.0.0.2\RougeExperiment_Data\Managed\System.Core.dll (this message is harmless)
 Platform assembly: C:\Users\PC\Documents\GitHub\Unity3D\RougeLikeExperiments\Builds\build0.0.0.2\RougeExperiment_Data\Managed\System.dll (this message is harmless)
-desktop: 1920x1080 60Hz; virtual: 1920x1080 at 0,0
+desktop: 1920x1080 30Hz; virtual: 1920x1080 at 0,0
 <RI> Initializing input.
 <RI> Input initialized.
 <RI> Initialized touch support.
-UnloadTime: 1.366638 ms
-ControllerGame.Update.isMenuOpen:TRUE: There shouldn't be any circumstance that isMenuOpen is true if you aren't paused
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+UnloadTime: 1.214773 ms
+Unloading 5 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 2.711388 ms
+
+Unloading 2 unused Assets to reduce memory usage. Loaded Objects now: 308.
+Total: 0.204883 ms (FindLiveObjects: 0.027011 ms CreateObjectMapping: 0.012231 ms MarkObjects: 0.159268 ms  DeleteObjects: 0.006115 ms)
 
 Setting up 4 worker threads for Enlighten.
-  Thread -> id: 15cc -> priority: 1 
-  Thread -> id: 1088 -> priority: 1 
-  Thread -> id: cbc -> priority: 1 
-  Thread -> id: 15a4 -> priority: 1 
+  Thread -> id: 390 -> priority: 1 
+  Thread -> id: 440 -> priority: 1 
+  Thread -> id: 1428 -> priority: 1 
+  Thread -> id: 1730 -> priority: 1 

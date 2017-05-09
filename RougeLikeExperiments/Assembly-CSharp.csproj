@@ -46,6 +46,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Resources\Scripts\Controllers\ControllerBuilder.cs" />
      <Compile Include="Assets\Resources\Scripts\Controllers\ControllerCinematic.cs" />
      <Compile Include="Assets\Resources\Scripts\Controllers\ControllerGUI.cs" />
      <Compile Include="Assets\Resources\Scripts\Controllers\ControllerGame.cs" />

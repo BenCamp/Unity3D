@@ -53,6 +53,7 @@
      <Compile Include="Assets\Resources\Scripts\Controllers\ControllerGame.cs" />
      <Compile Include="Assets\Resources\Scripts\Controllers\ControllerInput.cs" />
      <Compile Include="Assets\Resources\Scripts\Controllers\Utilities\Message.cs" />
+     <Compile Include="Assets\Resources\Scripts\Library\ErrorStrings.cs" />
  <Reference Include="Facebook.Unity.Settings">
  <HintPath>C:/Users/PC/Documents/GitHub/Unity3D/RougeLikeExperiments/Library/FacebookSDK/Facebook.Unity.Settings.dll</HintPath>
  </Reference>

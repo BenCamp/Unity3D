@@ -151,19 +151,19 @@ public class ControllerGame : MonoBehaviour {
 	{
 		/*A callback registered an error*/
 		if (messageGUI.scene == "ERROR") {
-			Debug.LogError ("ControllerGame.Update: Something exploded in the GUI: " + messageGUI.data);
+			Debug.LogError (ErrorStrings.GetError ("CG0003")+ messageGUI.data);
 			Application.Quit ();
 		}
 		if (messageCinematic.scene == "ERROR"){
-			Debug.LogError ("ControllerGame.Update: Something exploded in the Cinematic: " + messageCinematic.data);
+			Debug.LogError (ErrorStrings.GetError("CG0004") + messageCinematic.data);
 			Application.Quit ();
 		}
 		if (messageInput.scene == "ERROR") {
-			Debug.LogError ("ControllerGame.Update: Something exploded in the Input: " + messageInput.data);
+			Debug.LogError (ErrorStrings.GetError("CG0005") + messageInput.data);
 			Application.Quit ();
 		}
 		if (messageBuilder.scene == "ERROR") {
-			Debug.LogError ("ControllerGame.Update: Something exploded in the Builder: " + messageBuilder.data);
+			Debug.LogError (ErrorStrings.GetError("CG0006") + messageBuilder.data);
 			Application.Quit ();
 		}
 
@@ -176,7 +176,7 @@ public class ControllerGame : MonoBehaviour {
 			 *		Error (ControllerGame -> Update -> isMenuOpen -> TRUE: There shouldn't be any circumstance that isMenuOpen is true if you aren't paused)
 			 */
 			if (isGamePaused == false) {
-				Debug.LogError ("ControllerGame -> Update -> isMenuOpen -> TRUE: There shouldn't be any circumstance that isMenuOpen is true if you aren't paused");
+				Debug.LogError (ErrorStrings.GetError("CG0007"));
 				Application.Quit ();
 			}
 
@@ -214,10 +214,10 @@ public class ControllerGame : MonoBehaviour {
 							EventForCinematic (new Message ("SCENE_ProgramLaunched", "end splash")); 
 							EventForInput (new Message ("SCENE_ProgramLaunched", "title has started"));
 						} else {
-							Debug.LogError ("ControllerGame -> Update -> isMenuOpen -> TRUE -> SCENE_ProgramLaunched -> ControllerBuilder message: Builder shouldn't be sending this kind of data");
+							Debug.LogError (ErrorStrings.GetError ("CG0001"));
 						}
 					} else {
-						Debug.LogError ("ControllerGame -> Update -> isMenuOpen -> TRUE -> SCENE_ProgramLaunched -> ContorllerBuilder message: Builder shouldn't be sending this kind of scene");
+						Debug.LogError (ErrorStrings.GetError ("CG0002"));
 						Application.Quit ();
 					}
 					//Clear messageBuilder
@@ -404,7 +404,7 @@ public class ControllerGame : MonoBehaviour {
 			 *
 			 */
 			if (SceneManager.GetActiveScene ().name != "SCENE_PlayingGame") {
-				Debug.LogError ("ControllerGame -> Update -> isMenuOpen -> FALSE -> PlayingGame: There shouldn't be any circumstance that isMenuOpen is false if you aren't in SCENE_PlayingGame");
+				Debug.LogError (ErrorStrings.GetError("CG0008"));
 				Application.Quit ();
 			}
 

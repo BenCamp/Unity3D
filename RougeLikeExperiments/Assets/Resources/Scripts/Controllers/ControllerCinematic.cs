@@ -144,17 +144,31 @@ public class ControllerCinematic : MonoBehaviour {
 			/*In SCENE_ProgramLaunched*/
 			if (currentScene == "SCENE_ProgramLaunched") {
 				if (currentData == "end splash") {
-					currentVideo.Stop ();
-					currentVideo.clip = screenTitle;
-					currentVideo.Play ();
+					if (currentVideo.clip.originalPath == "Assets/Resources/Movies/SplashScreen.mp4") {
+						currentVideo.Stop ();
+						currentVideo.clip = screenTitle;
+						currentVideo.Play ();
+					}
+					else {
+						EventCinematic (new Message ("ERROR", "ControllerCinematic -> Update -> currentScene is SCENE_ProgramLaunched -> currentData is \"end splash\": " +
+							"Either the Wrong clip is loaded or the ControllerGame sent the wrong message"));
+					}
 				}
 
 				else if (currentData == "end title") {
-
+					if (currentVideo.clip.originalPath ==  "Assets/Resources/Movies/TitleScreen.mp4"){
+						currentVideo.Stop ();
+						EventCinematic (new Message ("SCENE_ProgramLaunched", "done title"));
+					}
+					else {
+						EventCinematic (new Message ("ERROR", "ControllerCinematic -> Update -> currentScene is SCENE_ProgramLaunched -> currentData is \"end title\": " +
+							"Either the Wrong clip is loaded or the ControllerGame sent the wrong message"));
+					}
 				}
 
 				else {
-					EventCinematic (new Message ("ERROR", "ControllerCinematic -> Update -> messageForCinematic -> scene is not empty  -> currentScene equals SCENE_ProgramLaunched: Game shouldn't be sending this kind of data"));
+					EventCinematic (new Message ("ERROR", "ControllerCinematic -> Update -> messageForCinematic -> scene is not empty  -> currentScene equals SCENE_ProgramLaunched: " +
+						"Game shouldn't be sending this kind of data"));
 				}
 			}
 		}

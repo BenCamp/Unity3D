@@ -73,7 +73,7 @@ public class ControllerInput : MonoBehaviour {
 				currentData = messageForInput.data;
 			} 
 			else {
-				Debug.LogError ("ControllerInput -> Update -> ControllerGame message: currentScene does not match provided Scene name");
+				EventInput (new Message ("ERROR", ErrorStrings.GetError ("CI0001")));
 			}
 		}
 
@@ -98,9 +98,17 @@ public class ControllerInput : MonoBehaviour {
 		}
 
 		/*amIListeningForInput is TRUE
-		 *	The user Input anything
+		 * 	currentScene is SCENE_ProgramLaunched
+		 *		User Input something
+		 *			TO Game: User input something
 		 * 		
 		 */
-
+		if (amIListeningForInput == true) {
+			if (currentScene == "SCENE_ProgramLaunched"){
+				if (Input.anyKey == true) {
+					EventInput (new Message ("SCENE_ProgramLaunched", ""));
+				}
+			}
+		}
 	}
 }

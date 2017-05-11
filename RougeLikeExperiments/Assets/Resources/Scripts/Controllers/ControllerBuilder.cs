@@ -20,6 +20,9 @@ public class ControllerBuilder : MonoBehaviour {
 
 	/***Variables***/
 	bool wasProgramAlreadyLaunched = false;
+	float minTimeForSplash = 7f;
+	string currentScene = "";
+	string currentData = "";
 
 	/***Monobehaviour functions***/
 	void Awake () {
@@ -43,17 +46,25 @@ public class ControllerBuilder : MonoBehaviour {
 		ControllerGame.EventChangeScene -= EventChangeScene;
 	}
 	void Update (){
-		if (messageCurrentScene.scene == "SCENE_ProgramLaunched") {
+		if (messageCurrentScene.scene.ToString () != "") {
+			currentScene = messageCurrentScene.scene.ToString ();
+			if (currentScene == "SCENE_ProgramLaunched" && wasProgramAlreadyLaunched == true) {
+				EventBuilder (new Message ("ERROR", "ControllerBuilder -> Update -> messageCurrentScene -> scene is not empty: Duplicate SCENE_ProgramLaunched message."));
+			}
+		}
+
+		if (currentScene == "SCENE_ProgramLaunched") {
 			if (wasProgramAlreadyLaunched == false) {
 				wasProgramAlreadyLaunched = true;
 				messageCurrentScene = new Message ();
-				new WaitForSecondsRealtime (2f);
-
 			}
-
-			if (wasProgramAlreadyLaunched == true) {
-				EventBuilder (new Message ("ERROR", "ControllerBuilder already received this message."));
+			else if (wasProgramAlreadyLaunched == true) {
+				if (Time.time >= minTimeForSplash) {
+					EventBuilder (new Message ("SCENE_ProgramLaunched", "done loading"));
+					this.enabled = false;
+				}
 			}
 		}
+
 	}
 }

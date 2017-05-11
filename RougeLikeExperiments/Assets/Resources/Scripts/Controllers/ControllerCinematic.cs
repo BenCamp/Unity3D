@@ -26,6 +26,8 @@ public class ControllerCinematic : MonoBehaviour {
 
 	/***Variables***/
 	bool isSplashStarted = false;
+	string currentScene = "";
+	string currentData = "";
 	VideoPlayer currentVideo;
 	VideoClip screenSplash;
 	VideoClip screenTitle;
@@ -47,8 +49,10 @@ public class ControllerCinematic : MonoBehaviour {
 		//Set Components and Screens
 		currentVideo = gameObject.GetComponent <VideoPlayer>();
 		currentVideo.SetTargetAudioSource (0, gameObject.GetComponent<AudioSource> ());
+
 		currentVideo.targetCamera = Camera.main;
 		screenSplash = (VideoClip) Resources.Load("Movies/SplashScreen");
+		screenTitle = (VideoClip)Resources.Load ("Movies/TitleScreen");
 	}
 	void OnEnable (){
 		//Enable Listeners for events
@@ -61,27 +65,98 @@ public class ControllerCinematic : MonoBehaviour {
 		ControllerGame.EventForCinematic -= EventForCinematic;
 	}
 	void Update (){
-		//The Scene has changed
+		
+		/*Scene has changed
+		 * 	SET currentScene to provided scene
+		 * 	
+		 * 	currentScene SCENE_ProgramLaunched
+		 * 		isSplashStarted is FALSE
+		 *			CLEAR messageCurrentScene
+		 * 			SET isSplashStarted to TRUE
+		 * 			SET currentVideo clip to screenSplash
+		 * 			PLAY the video
+		 * 
+		 * 		isSplashStarted is TRUE
+		 * 			Error (ControllerCinematic -> Update -> messageCurrentScene -> scene is not empty -> currentScene equals SCENE_ProgramLaunched: Splash Screen was already active.)
+		 * 
+		 * 	currentScene is 
+		 * 
+		 * 
+		 * 	currentScene is something else
+		 * 		DO nothing
+		 * 	
+		 */
 		if (messageCurrentScene.scene.ToString () != "") {
+			currentScene = messageCurrentScene.scene.ToString ();
+
 			//Changed to SCENE_ProgramLaunched
-			if (messageCurrentScene.scene.ToString () == "SCENE_ProgramLaunched") {
+			if (currentScene == "SCENE_ProgramLaunched") {
+				//Haven't already started the splash
 				if (isSplashStarted == false) {
-					currentVideo.clip = screenSplash;
 					isSplashStarted = true;
+					currentVideo.clip = screenSplash;
 					currentVideo.Play ();
 
 					messageCurrentScene = new Message ();
-				} else if (isSplashStarted == true) {
-					EventCinematic (new Message ("ERROR", "Cinematic manager received a notification that the scene changed to SCENE_ProgramLaunched. Splash Screen was already active."));
+				}
+
+				//Splash already started and shouldn't have
+				else if (isSplashStarted == true) {
+					EventCinematic (new Message ("ERROR", "ControllerCinematic -> Update -> messageCurrentScene -> scene  -> Is not empty string  -> currentScene -> SCENE_ProgramLaunched: Splash Screen was already active."));
 				}
 			}
 			//Some other stuff probably
 			//Default: don't do anything
 		}
 
-		//ControllerGame has sent a direct message
+		/*ControllerGame has sent a direct message
+		 * 		currentScene does not match provided scene name
+		 * 			Error (ControllerCinematic -> Update -> messageForCinematic -> scene is not empty: Missed a scene change.)
+		 * 
+		 * 		SET currentData to provided data
+		 * 		CLEAR messageForCinematic
+		 * 
+		 * 		currentScene is SCENE_ProgramLaunched
+		 * 			currentData is "end splash"
+		 * 				
+		 * 			currentData is "end title"
+		 * 
+		 * 			else
+		 * 				Error (ControllerCinematic -> Update -> messageForCinematic -> scene is not empty -> currentScene equals SCENE_ProgramLaunched: Game shouldn't be sending this kind of data)
+		 * 
+		 * 		currentScene is 
+		 * 
+		 * 		currentScene is something else
+		 * 			Error (ControllerCinematic -> Update -> messageForCinematic -> scene is not empty -> else: Game shouldn't be sending data to Cinematic in this scene)
+		 * 
+		 */
 		if (messageForCinematic.scene.ToString () != "") {
+			
+			//currentScene does not match provided scene name
+			if (messageForCinematic.scene.ToString () != currentScene) {
+				EventCinematic (new Message ("ERROR", "ControllerCinematic -> Update -> messageForCinematic -> scene is not empty: Missed a scene change."));
+			}
 
+			//Save the data from the message and clear the message
+			currentData = messageForCinematic.data.ToString ();
+			messageForCinematic = new Message ();
+
+			/*In SCENE_ProgramLaunched*/
+			if (currentScene == "SCENE_ProgramLaunched") {
+				if (currentData == "end splash") {
+					currentVideo.Stop ();
+					currentVideo.clip = screenTitle;
+					currentVideo.Play ();
+				}
+
+				else if (currentData == "end title") {
+
+				}
+
+				else {
+					EventCinematic (new Message ("ERROR", "ControllerCinematic -> Update -> messageForCinematic -> scene is not empty  -> currentScene equals SCENE_ProgramLaunched: Game shouldn't be sending this kind of data"));
+				}
+			}
 		}
 
 

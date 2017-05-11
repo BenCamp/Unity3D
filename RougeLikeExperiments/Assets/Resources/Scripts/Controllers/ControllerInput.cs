@@ -14,11 +14,18 @@ public class ControllerInput : MonoBehaviour {
 	void EventChangeScene (Message message){
 		messageCurrentScene = message;
 	}
+	void EventForInput (Message message){
+		messageForInput = message;
+	}
 
 	/***Messages***/
 	public Message messageCurrentScene = new Message();
+	public Message messageForInput = new Message ();
 
 	/***Variables***/
+	bool amIListeningForInput = false;
+	string currentScene = "";
+	string currentData = "";
 
 	/***Monobehaviour functions***/
 	void Awake (){
@@ -37,14 +44,63 @@ public class ControllerInput : MonoBehaviour {
 	void OnEnable (){
 		//Enable Listeners for events
 		ControllerGame.EventChangeScene += EventChangeScene;
+		ControllerGame.EventForInput += EventForInput;
 	}
 	void OnDisable (){
 		//Disable Listeners for events
 		ControllerGame.EventChangeScene -= EventChangeScene;
+		ControllerGame.EventForInput -= EventForInput;
 	}
 	void Update (){
-		if (messageCurrentScene.scene != "") {
+		/*Scene has changed
+		 * 	SET currentScene to provided scene
+		 */ 	
+		if (messageCurrentScene.scene.ToString () != "") {
+			currentScene = messageCurrentScene.scene.ToString ();
 
 		}
+
+		/*ControllerGame has sent a direct message
+		 * 		currentScene matches the provided scene name
+		 *			SET currentData to provided data
+		 *
+		 *		Default
+		 * 			Error (ControllerInput -> Update -> ControllerGame message: currentScene does not match provided Scene name)
+		 *			
+		 */
+		if (messageForInput.scene.ToString () != "") {
+			if (currentScene == messageForInput.scene.ToString ()) {
+				currentData = messageForInput.data;
+			} 
+			else {
+				Debug.LogError ("ControllerInput -> Update -> ControllerGame message: currentScene does not match provided Scene name");
+			}
+		}
+
+
+		/*currentData is not empty
+		 *	SET tempData equal to currentData
+		 *	CLEAR currentData
+		 *
+		 *	currentScene is SCENE_ProgramLaunched
+		 *		tempData is saying title has started
+		 *			SET amIListeningForInput to TRUE
+		 */
+		if (currentData != "") {
+			string tempData = currentData;
+			currentData = "";
+
+			if (currentScene == "SCENE_ProgramLaunched") {
+				if (tempData == "title has started") {
+					amIListeningForInput = true;
+				}
+			}
+		}
+
+		/*amIListeningForInput is TRUE
+		 *	The user Input anything
+		 * 		
+		 */
+
 	}
 }

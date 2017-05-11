@@ -80,7 +80,7 @@ public class ControllerGUI : MonoBehaviour {
 				} 
 				else {
 					if (EventGUI != null) {
-						EventGUI (new Message ("SCENE_ProgramLaunched", "ERROR"));
+						EventGUI (new Message ("SCENE_ProgramLaunched", ""));
 					}
 				}
 				break;

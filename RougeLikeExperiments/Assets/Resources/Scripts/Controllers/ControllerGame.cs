@@ -136,27 +136,34 @@ public class ControllerGame : MonoBehaviour {
 		isIntroFinished = true;
 		isBuilderWorldFinished = true;
 
-		/*LOAD SCENE_ProgramLaunched*/
-		SceneManager.LoadScene("SCENE_ProgramLaunched");
-		EventChangeScene (new Message ("SCENE_ProgramLaunched", ""));
+		if (SceneManager.GetActiveScene ().name != "working") {
+			/*Deal With Mouse
+			 *		Capture Mouse
+			 *		Hide Mouse
+			 */
+
+			/*LOAD SCENE_ProgramLaunched*/
+			SceneManager.LoadScene ("SCENE_ProgramLaunched");
+			EventChangeScene (new Message ("SCENE_ProgramLaunched", ""));
+		}
 	}
 	void Update ()
 	{
 		/*A callback registered an error*/
 		if (messageGUI.scene == "ERROR") {
-			Debug.Log ("ControllerGame.Update: Something exploded in the GUI: " + messageGUI.data);
+			Debug.LogError ("ControllerGame.Update: Something exploded in the GUI: " + messageGUI.data);
 			Application.Quit ();
 		}
 		if (messageCinematic.scene == "ERROR"){
-			Debug.Log ("ControllerGame.Update: Something exploded in the Cinematic: " + messageCinematic.data);
+			Debug.LogError ("ControllerGame.Update: Something exploded in the Cinematic: " + messageCinematic.data);
 			Application.Quit ();
 		}
 		if (messageInput.scene == "ERROR") {
-			Debug.Log ("ControllerGame.Update: Something exploded in the Input: " + messageInput.data);
+			Debug.LogError ("ControllerGame.Update: Something exploded in the Input: " + messageInput.data);
 			Application.Quit ();
 		}
 		if (messageBuilder.scene == "ERROR") {
-			Debug.Log ("ControllerGame.Update: Something exploded in the Builder: " + messageBuilder.data);
+			Debug.LogError ("ControllerGame.Update: Something exploded in the Builder: " + messageBuilder.data);
 			Application.Quit ();
 		}
 
@@ -166,61 +173,84 @@ public class ControllerGame : MonoBehaviour {
 			/*	
 			 *	Double Check that the game is paused
 			 *  isGamePaused is FALSE
-			 *		Error (ControllerGame.Update.isMenuOpen:TRUE: There shouldn't be any circumstance that isMenuOpen is true if you aren't paused)
+			 *		Error (ControllerGame -> Update -> isMenuOpen -> TRUE: There shouldn't be any circumstance that isMenuOpen is true if you aren't paused)
 			 */
 			if (isGamePaused == false) {
-				Debug.LogError ("ControllerGame.Update.isMenuOpen:TRUE: There shouldn't be any circumstance that isMenuOpen is true if you aren't paused");
+				Debug.LogError ("ControllerGame -> Update -> isMenuOpen -> TRUE: There shouldn't be any circumstance that isMenuOpen is true if you aren't paused");
 				Application.Quit ();
 			}
 
 
 			/*In SCENE_ProgramLaunched
-			 * Builder Callback has registered some message
-			 *		Loading Done
-			 *			TO ControllerGUI: Listen for clicks to skip title
-			 *			TO ControllerCinematic: SHOW screenTitle
+			 * ControllerBuilder has sent a message
+			 * 		Provided scene is SCENE_ProgramLaunched
+			 *			Loading Done
+			 *				TO ControllerInput: Listen for user input to skip title
+			 *				TO ControllerCinematic: SHOW screenTitle
 			 *
+			 *			Default
+			 *				Error (ControllerGame -> Update -> isMenuOpen -> TRUE -> SCENE_ProgramLaunched -> ControllerBuilder message: Builder shouldn't be sending this kind of data)
+			 *		
 			 *		Default
-			 *			Error (ControllerGame.Update.isMenuOpen:TRUE.ProgramLaunched: Builder shouldn't be sending this kind of data)
-			 *
+			 *			Error (ControllerGame -> Update -> isMenuOpen -> TRUE -> SCENE_ProgramLaunched -> ContorllerBuilder message: Builder shouldn't be sending this kind of scene
 			 *  
-			 * Input Callback has registered some message
+			 * ControllerInput has sent a message
 			 * 		User input something
-			 * 			In screenTitle
-			 * 				TO ControllerCinematic: STOP screenTitle
+			 * 			TO ControllerCinematic: STOP screenTitle
 			 * 			
 			 * 
-			 * Cinematic Callback has registered some message
-			 * 		Title ended
+			 * ControllerCinematic has sent a message
+			 * 		screenTitle ended
 			 * 			LOAD SCENE_MenuStart
 			 *	
 			 */
 			if (SceneManager.GetActiveScene().name == "SCENE_ProgramLaunched") {
-				switch (messageBuilder.data.ToString()) {
-				case "done loading":
-					EventForCinematic (new Message ("", "end splash")); 
-					break;
 
-				default:
-					break;
+				//ControllerBuilder has sent a message
+				if (messageBuilder.scene.ToString () != "") {
+					//ControllerBuilder sent correct scene data
+					if (messageBuilder.scene.ToString () == "SCENE_ProgramLaunched") {
+						if (messageBuilder.data.ToString () == "done loading") {
+							EventForCinematic (new Message ("SCENE_ProgramLaunched", "end splash")); 
+							EventForInput (new Message ("SCENE_ProgramLaunched", "title has started"));
+						} else {
+							Debug.LogError ("ControllerGame -> Update -> isMenuOpen -> TRUE -> SCENE_ProgramLaunched -> ControllerBuilder message: Builder shouldn't be sending this kind of data");
+						}
+					} else {
+						Debug.LogError ("ControllerGame -> Update -> isMenuOpen -> TRUE -> SCENE_ProgramLaunched -> ContorllerBuilder message: Builder shouldn't be sending this kind of scene");
+						Application.Quit ();
+					}
+					//Clear messageBuilder
+					messageBuilder = new Message ();
+				}
+					
+				//ControllerInput has sent a message
+				if (messageInput.scene.ToString () != "") {
+					//ControllerInput sent correct scene data
+					if (messageInput.scene.ToString () == "SCENE_ProgramLaunched") {
+						EventForCinematic (new Message ("SCENE_ProgramLaunched", "end title"));
+					}
+					//Clear messageInput
+					messageInput = new Message ();
 				}
 
-				switch (messageCinematic.data.ToString()) {
-				case "done splash":
-
-					break;
-
-				case "done title":
-
-					break;
-
-				default:
-					break;
+				//ControllerCinematic has sent a message
+				if (messageCinematic.scene.ToString () != "") {
+					//ControllerCinematic sent correct scene data
+					if (messageCinematic.scene.ToString () == "SCENE_ProgramLaunched") {
+						if (messageCinematic.data == "done title") {
+							SceneManager.LoadScene ("SCENE_MenuStart");
+						} else {
+							
+						}
+					}
+					//Clear messageCinematic
+					messageCinematic = new Message ();
 				}
 			}
 
 			/*	In SCENE_MenuStart	
-			 *		GUI Callback has registered some message
+			 *		ControllerGUI has sent a message
 			 *			User has selected "New Game"
 			 *				LOAD SCENE_MenuNewGame
 			 *		
@@ -236,7 +266,7 @@ public class ControllerGame : MonoBehaviour {
 			 *				Exit Game
 			 *			
 			 *			Default
-			 *				Error (ControllerGame.Update.isMenuOpen:TRUE.MenuStart: GUI shouldn't be sending this kind of data)
+			 *				Error (ControllerGame -> Update -> isMenuOpen -> TRUE -> MenuStart: GUI shouldn't be sending this kind of data)
 			 *
 			 */
 			if (SceneManager.GetActiveScene().name == "SCENE_MenuStart") {
@@ -267,7 +297,7 @@ public class ControllerGame : MonoBehaviour {
 			}
 
 			/*	In SCENE_MenuNewGame
-			 *		GUI Callback has registered some message
+			 *		ControllerGUI has sent a message
 			 *			New-Game Values RETURNED
 			 *				LOAD SCENE_NewGame
 			 *					
@@ -275,7 +305,7 @@ public class ControllerGame : MonoBehaviour {
 			 *				LOAD SCENE_MenuStart				
 		 	 *
 			 *			Default
-			 *				Error (ControllerGame.Update.isMenuOpen:TRUE.MenuNewGame: UI shouldn't be sending this kind of data)
+			 *				Error (ControllerGame -> Update -> isMenuOpen -> TRUE -> MenuNewGame: GUI shouldn't be sending this kind of data)
 			 *		
 			 */	
 			if (SceneManager.GetActiveScene().name == "SCENE_MenuNewGame") {
@@ -298,45 +328,41 @@ public class ControllerGame : MonoBehaviour {
 			}
 
 			/*	In SCENE_NewGame
-			 *		New-Game Values are not null
-			 *			PASS New-Game Values to BuilderWorld (will build the game in the background)
-			 *			Set New-Game Values to null
-			 *
-			 *		isIntroFinished and isBuilderWorldFinished are TRUE
-			 *			TO UI: CLOSE loading screen
+			 *		isIntroFinished and isControlerBuilderFinished are TRUE
+			 *			TO ControlerCinematic: CLOSE loading screen
 			 *			LOAD SCENE_PlayingGame
 			 *
-			 *		ControllerCinematic Callback has registered some message
+			 *		ControllerCinematic has sent a message
 			 *			Intro has played successfully
 			 *				SET isIntroFinished to TRUE
 			 *						
 			 *			Default
-			 *				Error (ControllerGame.Update.isMenuOpen:TRUE.NewGame: ControllerCinematic shouldn't be sending this kind of data)
+			 *				Error (ControllerGame -> Update -> isMenuOpen -> TRUE -> SCENE_NewGame -> ControllerCinematic message: Cinematic shouldn't be sending this kind of data)
 			 *
-			 *		BuilderWorld Callback has registered some message
-			 *			RETURNS TRUE (SCENE_PlayingGame is built, I'm assuming that you can dynamically build a scene you aren't in.. :/ we'll just have to wait and see)
-			 *				SET isBuilderWorldFinished to TRUE
+			 *		ControllerBuilder has sent a message
+			 *			ControllerBuilder has finished preparing the scene (SCENE_PlayingGame is built, I'm assuming that you can dynamically build a scene you aren't in.. :/ we'll just have to wait and see)
+			 *				SET isControllerBuilderFinished to TRUE
 			 *			
 			 *			Default
-			 *				Error (ControllerGame.Update.isMenuOpen:TRUE.NewGame: BuilderWorld shouldn't be sending this kind of data)
+			 *				Error (ControllerGame -> Update -> isMenuOpen -> TRUE -> SCENE_NewGame -> ControllerBuilder message: Builder shouldn't be sending this kind of data)
 			 *
-			 *		ControllerInput Callback has registered some message
+			 *		ControllerInput has sent a message
 			 *			User Input
 			 *				isIntroFinished is FALSE
 			 *					TO ControlerCinematic: End Intro prematurely
 			 *			Default
-			 *				Error (ControllerGame.Update.isMenuOpen:TRUE.NewGame: ControllerInput shouldn't be sending this kind of data)
+			 *				Error (ControllerGame -> Update -> isMenuOpen -> TRUE -> SCENE_NewGame -> ControllerInput message: Input shouldn't be sending this kind of data)
 			 *
-			 *		GUI Callback has registered some message
+			 *		ControllerGUI has sent a message
 			 *			Default
-			 *				Error (ControllerGame.Update.isMenuOpen:TRUE.NewGame: UI shouldn't be sending this kind of data)
+			 *				Error (ControllerGame -> Update -> isMenuOpen -> TRUE -> SCENE_NewGame -> ControllerGUI message: GUI shouldn't be sending this kind of data)
 			 */
 			if (SceneManager.GetActiveScene().name == "SCENE_NewGame") {
 
 			}
 
 			/*	In SCENE_MenuLoadGame
-			 *		UI Callback has registered some message
+			 *		ControllerGUI has sent a message
 			 *			Load-Game Values RETURNED
 			 *			LOAD SCENE_LoadGame
 			 *
@@ -344,7 +370,7 @@ public class ControllerGame : MonoBehaviour {
 			 *			LOAD SCENE_MenuStart				
 			 *
 			 *		Default
-			 *			Error (ControllerGame.Update.isMenuOpen:TRUE.MenuLoadGame: UI shouldn't be sending this kind of data)
+			 *			Error (ControllerGame -> Update -> isMenuOpen -> TRUE -> MenuLoadGame -> ControllerGUI message: GUI shouldn't be sending this kind of data)
 			 */
 			if (SceneManager.GetActiveScene().name == "SCENE_MenuLoadGame") {
 
@@ -374,11 +400,11 @@ public class ControllerGame : MonoBehaviour {
 			
 			/*
 			 *	Not in SCENE_PlayingGame
-			 *		Error (ControllerGame.Update.isMenuOpen:FALSE.PlayingGame: There shouldn't be any circumstance that isMenuOpen is false if you aren't in SCENE_PlayingGame)
+			 *		Error (ControllerGame -> Update -> isMenuOpen -> FALSE -> SCENE_PlayingGame: There shouldn't be any circumstance that isMenuOpen is false if you aren't in SCENE_PlayingGame)
 			 *
 			 */
 			if (SceneManager.GetActiveScene ().name != "SCENE_PlayingGame") {
-				Debug.LogError ("ControllerGame.Update.isMenuOpen:FALSE.PlayingGame: There shouldn't be any circumstance that isMenuOpen is false if you aren't in SCENE_PlayingGame");
+				Debug.LogError ("ControllerGame -> Update -> isMenuOpen -> FALSE -> PlayingGame: There shouldn't be any circumstance that isMenuOpen is false if you aren't in SCENE_PlayingGame");
 				Application.Quit ();
 			}
 

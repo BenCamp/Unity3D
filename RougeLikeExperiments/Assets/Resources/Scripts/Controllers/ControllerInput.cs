@@ -42,6 +42,7 @@ public class ControllerInput : MonoBehaviour {
 
 	}
 	void OnEnable (){
+		Debug.Log (gameObject.GetInstanceID ());
 		//Enable Listeners for events
 		ControllerGame.EventChangeScene += EventChangeScene;
 		ControllerGame.EventForInput += EventForInput;
@@ -57,7 +58,6 @@ public class ControllerInput : MonoBehaviour {
 		 */ 	
 		if (messageCurrentScene.scene.ToString () != "") {
 			currentScene = messageCurrentScene.scene.ToString ();
-
 		}
 
 		/*ControllerGame has sent a direct message
@@ -87,11 +87,8 @@ public class ControllerInput : MonoBehaviour {
 		 *			SET amIListeningForInput to TRUE
 		 */
 		if (currentData != "") {
-			string tempData = currentData;
-			currentData = "";
-
 			if (currentScene == "SCENE_ProgramLaunched") {
-				if (tempData == "title has started") {
+				if (currentData == "title has started") {
 					amIListeningForInput = true;
 				}
 			}
@@ -107,8 +104,14 @@ public class ControllerInput : MonoBehaviour {
 			if (currentScene == "SCENE_ProgramLaunched"){
 				if (Input.anyKey == true) {
 					EventInput (new Message ("SCENE_ProgramLaunched", ""));
+					amIListeningForInput = false;
 				}
 			}
 		}
+
+		//Clear the variables
+		currentData = "";
+		messageCurrentScene = new Message ();
+		messageForInput = new Message ();
 	}
 }

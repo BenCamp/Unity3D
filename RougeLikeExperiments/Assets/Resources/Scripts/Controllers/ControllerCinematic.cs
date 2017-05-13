@@ -96,8 +96,6 @@ public class ControllerCinematic : MonoBehaviour {
 					isSplashStarted = true;
 					currentVideo.clip = screenSplash;
 					currentVideo.Play ();
-
-					messageCurrentScene = new Message ();
 				}
 
 				//Splash already started and shouldn't have
@@ -131,7 +129,6 @@ public class ControllerCinematic : MonoBehaviour {
 		 * 
 		 */
 		if (messageForCinematic.scene.ToString () != "") {
-			
 			//currentScene does not match provided scene name
 			if (messageForCinematic.scene.ToString () != currentScene) {
 				EventCinematic (new Message ("ERROR", "ControllerCinematic -> Update -> messageForCinematic -> scene is not empty: Missed a scene change."));
@@ -139,7 +136,6 @@ public class ControllerCinematic : MonoBehaviour {
 
 			//Save the data from the message and clear the message
 			currentData = messageForCinematic.data.ToString ();
-			messageForCinematic = new Message ();
 
 			/*In SCENE_ProgramLaunched*/
 			if (currentScene == "SCENE_ProgramLaunched") {
@@ -173,6 +169,8 @@ public class ControllerCinematic : MonoBehaviour {
 			}
 		}
 
-
+		//Clear message variables
+		messageCurrentScene = new Message ();
+		messageForCinematic = new Message ();
 	}
 }

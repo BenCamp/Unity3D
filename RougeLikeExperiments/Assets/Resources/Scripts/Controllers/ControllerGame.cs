@@ -71,15 +71,31 @@ public class ControllerGame : MonoBehaviour {
 	/***Listeners***/
 	void EventGUI (Message message){
 		messageGUI = message;
+		if (messageGUI.scene == "ERROR") {
+			Debug.LogError (ErrorStrings.GetError ("CG0003")+ messageGUI.data);
+			Application.Quit ();
+		}
 	}
 	void EventCinematic (Message message){
 		messageCinematic = message;
+		if (messageCinematic.scene == "ERROR"){
+			Debug.LogError (ErrorStrings.GetError("CG0004") + messageCinematic.data);
+			Application.Quit ();
+		}
 	}
 	void EventInput (Message message){
 		messageInput = message;
+		if (messageInput.scene == "ERROR") {
+			Debug.LogError (ErrorStrings.GetError("CG0005") + messageInput.data);
+			Application.Quit ();
+		}
 	}
 	void EventBuilder (Message message){
 		messageBuilder = message;
+		if (messageBuilder.scene == "ERROR") {
+			Debug.LogError (ErrorStrings.GetError("CG0006") + messageBuilder.data);
+			Application.Quit ();
+		}
 	}
 
 	/***Messages***/
@@ -149,24 +165,6 @@ public class ControllerGame : MonoBehaviour {
 	}
 	void Update ()
 	{
-		/*A callback registered an error*/
-		if (messageGUI.scene == "ERROR") {
-			Debug.LogError (ErrorStrings.GetError ("CG0003")+ messageGUI.data);
-			Application.Quit ();
-		}
-		if (messageCinematic.scene == "ERROR"){
-			Debug.LogError (ErrorStrings.GetError("CG0004") + messageCinematic.data);
-			Application.Quit ();
-		}
-		if (messageInput.scene == "ERROR") {
-			Debug.LogError (ErrorStrings.GetError("CG0005") + messageInput.data);
-			Application.Quit ();
-		}
-		if (messageBuilder.scene == "ERROR") {
-			Debug.LogError (ErrorStrings.GetError("CG0006") + messageBuilder.data);
-			Application.Quit ();
-		}
-
 		/*isMenuOpen is TRUE*/
 		if (isMenuOpen == true) {
 			
@@ -200,9 +198,15 @@ public class ControllerGame : MonoBehaviour {
 			 * 			
 			 * 
 			 * ControllerCinematic has sent a message
-			 * 		screenTitle ended
-			 * 			LOAD SCENE_MenuStart
-			 *	
+			 * 		Provided scene is SCENE_ProgramLaunched
+			 * 			screenTitle ended
+			 * 				LOAD SCENE_MenuStart
+			 * 			Default  
+			 *				Error (ControllerGame -> Update -> isMenuOpen -> TRUE -> SCENE_ProgramLaunched -> ControllerCinematic message: Cinematic shouldn't be sending this kind of data
+			 *  
+			 * 		Default
+			 * 			Error (ControllerGame -> Update -> isMenuOpen -> TRUE -> SCENE_ProgramLaunched -> ControllerCinematic message: Cinematic shouldn't be sending this kind of data
+			 *  
 			 */
 			if (SceneManager.GetActiveScene().name == "SCENE_ProgramLaunched") {
 
@@ -213,15 +217,16 @@ public class ControllerGame : MonoBehaviour {
 						if (messageBuilder.data.ToString () == "done loading") {
 							EventForCinematic (new Message ("SCENE_ProgramLaunched", "end splash")); 
 							EventForInput (new Message ("SCENE_ProgramLaunched", "title has started"));
-						} else {
+						} 
+						else {
 							Debug.LogError (ErrorStrings.GetError ("CG0001"));
+							Application.Quit ();
 						}
-					} else {
+					} 
+					else {
 						Debug.LogError (ErrorStrings.GetError ("CG0002"));
 						Application.Quit ();
 					}
-					//Clear messageBuilder
-					messageBuilder = new Message ();
 				}
 					
 				//ControllerInput has sent a message
@@ -230,8 +235,6 @@ public class ControllerGame : MonoBehaviour {
 					if (messageInput.scene.ToString () == "SCENE_ProgramLaunched") {
 						EventForCinematic (new Message ("SCENE_ProgramLaunched", "end title"));
 					}
-					//Clear messageInput
-					messageInput = new Message ();
 				}
 
 				//ControllerCinematic has sent a message
@@ -240,59 +243,114 @@ public class ControllerGame : MonoBehaviour {
 					if (messageCinematic.scene.ToString () == "SCENE_ProgramLaunched") {
 						if (messageCinematic.data == "done title") {
 							SceneManager.LoadScene ("SCENE_MenuStart");
-						} else {
-							
+							EventChangeScene (new Message ("SCENE_MenuStart", ""));
+						} 
+						else {
+							Debug.LogError (ErrorStrings.GetError ("CG0009"));
+							Application.Quit ();
 						}
 					}
-					//Clear messageCinematic
-					messageCinematic = new Message ();
+					else {
+						Debug.LogError (ErrorStrings.GetError ("CG0010"));
+						Application.Quit ();
+					}
 				}
 			}
 
 			/*	In SCENE_MenuStart	
-			 *		ControllerGUI has sent a message
-			 *			User has selected "New Game"
-			 *				LOAD SCENE_MenuNewGame
+			 * 		ControllerGUI has sent a message
+			 * 			Provided Scene is SCENE_MenuStart
+			 *				User has selected "New Game"
+			 *					LOAD SCENE_MenuNewGame
 			 *		
-			 *			User has selected "Load Game"
-			 *				LOAD SCENE_MenuLoadGame
+			 *				User has selected "Load Game"
+			 *					LOAD SCENE_MenuLoadGame
 			 *		
-			 *			User has selected "Credits"
-			 *				LOAD SCENE_Credits
+			 *				User has selected "Credits"
+			 *					LOAD SCENE_Credits
 			 *
-			 *			User has selected "Quit"
-			 *				Load SCENE_Quit
-			 *				or
-			 *				Exit Game
+			 *				User has selected "Quit"
+			 *					Load SCENE_Quit
+			 *					or
+			 *					Exit Game
 			 *			
-			 *			Default
-			 *				Error (ControllerGame -> Update -> isMenuOpen -> TRUE -> MenuStart: GUI shouldn't be sending this kind of data)
+			 *				Default
+			 *					Error (ControllerGame -> Update -> isMenuOpen -> TRUE -> SCENE_MenuStart -> ControllerGUI message: GUI shouldn't be sending this kind of data)
+			 *		
+			 *		ControllerBuilder has sent a message
+			 *			Error (ControllerGame -> Update -> isMenuOpen -> TRUE -> SCENE_MenuStart -> ControllerBuilder message: Builder shouldn't be sending data during Start Menu)
 			 *
+			 *		ControllerInput has sent a message
+			 *			Provided scene was SCENE_MenuStart
+			 *				
+			 *		ControllerCinematic has sent a message
+			 *
+			 *		ControllerCamera has sent a message
+			 *
+			 *		
 			 */
 			if (SceneManager.GetActiveScene().name == "SCENE_MenuStart") {
-				string data = messageGUI.data;
-				switch (data) {
-				case "":
-					break;
+				//ControllerBuilder has sent a message
+				if (messageBuilder.scene.ToString () != "") {
+					Debug.LogError (ErrorStrings.GetError ("CG0011"));
+					Application.Quit ();
+				}
 
-				case "new":
+				//ControllerCinematic has sent a message
+				if (messageCinematic.scene.ToString () != "") {
+					Debug.LogError (ErrorStrings.GetError ("CG0014"));
+				}
 
-					break;
+				//ControllerGUI has sent a message
+				if (messageGUI.scene.ToString () != "") {
+					if (messageGUI.scene.ToString () == "SCENE_MenuStart") {
+						string data = messageGUI.data;
+						if (data == "new") {
+							Debug.Log ("New was sent from GUI");
+						}
+						else if (data == "load") {
+							Debug.Log ("Load was sent from GUI");
+						}
+						else if (data == "credits") {
+							Debug.Log ("Credits was sent from GUI");
+						}
+						else if (data == "quit") {
+							Debug.Log ("Quit was sent from GUI");
+						}
+						else {
+							Debug.LogError (ErrorStrings.GetError ("CG0012"));
+							Application.Quit ();
+						}
+					}
+					else {
+						Debug.LogError (ErrorStrings.GetError ("CG0013"));
+					}
+				}
 
-				case "load":
+				//ControllerInput has sent a message
+				if (messageInput.scene.ToString () != "") {
+					//ControllerInput sent correct scene data
+					if (messageInput.scene.ToString () == "SCENE_ProgramLaunched") {
+						EventForCinematic (new Message ("SCENE_ProgramLaunched", "end title"));
+					}
+				}
 
-					break;
-
-				case "credits":
-
-					break;
-
-				case "quit":
-
-					break;
-
-				default:
-					break;
+				//ControllerCinematic has sent a message
+				if (messageCinematic.scene.ToString () != "") {
+					//ControllerCinematic sent correct scene data
+					if (messageCinematic.scene.ToString () == "SCENE_ProgramLaunched") {
+						if (messageCinematic.data == "done title") {
+							SceneManager.LoadScene ("SCENE_MenuStart");
+						} 
+						else {
+							Debug.LogError (ErrorStrings.GetError ("CG0009"));
+							Application.Quit ();
+						}
+					}
+					else {
+						Debug.LogError (ErrorStrings.GetError ("CG0010"));
+						Application.Quit ();
+					}
 				}
 			}
 
@@ -418,5 +476,12 @@ public class ControllerGame : MonoBehaviour {
 
 			}
 		}
+
+		//Clear message variables
+		messageBuilder = new Message ();
+		messageCinematic = new Message ();
+		messageGUI = new Message ();
+		messageInput = new Message ();
+
 	}
 }

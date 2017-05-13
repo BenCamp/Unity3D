@@ -14,13 +14,17 @@ public class ControllerBuilder : MonoBehaviour {
 	void EventChangeScene (Message message){
 		messageCurrentScene = message;
 	}
+	void EventForBuilder (Message message) {
+		messageForBuilder = message;
+	}
 
 	/***Messages***/
 	public Message messageCurrentScene = new Message();
+	public Message messageForBuilder = new Message ();
 
 	/***Variables***/
 	bool wasProgramAlreadyLaunched = false;
-	float minTimeForSplash = 7f;
+	float minTimeForSplash = 1f;
 	string currentScene = "";
 	string currentData = "";
 
@@ -56,7 +60,6 @@ public class ControllerBuilder : MonoBehaviour {
 		if (currentScene == "SCENE_ProgramLaunched") {
 			if (wasProgramAlreadyLaunched == false) {
 				wasProgramAlreadyLaunched = true;
-				messageCurrentScene = new Message ();
 			}
 			else if (wasProgramAlreadyLaunched == true) {
 				if (Time.time >= minTimeForSplash) {
@@ -66,5 +69,8 @@ public class ControllerBuilder : MonoBehaviour {
 			}
 		}
 
+		//Clear message variables
+		messageForBuilder = new Message ();
+		messageCurrentScene = new Message ();
 	}
 }

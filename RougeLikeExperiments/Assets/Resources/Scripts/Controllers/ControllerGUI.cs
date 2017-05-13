@@ -30,6 +30,7 @@ public class ControllerGUI : MonoBehaviour {
 	}
 	void EventChangeScene (Message message){
 		messageCurrentScene = message;
+		currentScene = message.scene;
 	}
 
 	/***Messages***/
@@ -37,6 +38,8 @@ public class ControllerGUI : MonoBehaviour {
 	public Message messageCurrentScene = new Message();
 
 	/***Variables***/
+	string currentScene = "";
+	string currentData = "";
 
 	/***Monobehavior functions***/
 	void Awake () {
@@ -60,32 +63,9 @@ public class ControllerGUI : MonoBehaviour {
 	}
 	void OnGUI (){
 		try{
-			switch (messageCurrentScene.scene.ToString()){
-			case "SCENE_ProgramLaunched":
-				if (messageCurrentScene.data == "splash") {
-					GUI.Label (new Rect (Screen.width / 2 - 100, Screen.height / 2 - 15, 200, 30), "Splash Screen");
-					if (GUI.Button (new Rect (Screen.width / 2 - 300, 5, 200, 30), "Go to Next Screen")) {
-						if (EventGUI != null) {
-							EventGUI (new Message ("SCENE_ProgramLaunched", "next"));
-						}
-					}
-				} 
-				else if (messageCurrentScene.data == "title") {
-					GUI.Label (new Rect (Screen.width / 2 - 100, Screen.height / 2 - 15, 200, 30), "Title Screen");
-					if (GUI.Button (new Rect (Screen.width / 2 - 300, 5, 200, 30), "Move to Next Scene")) {
-						if (EventGUI != null) {
-							EventGUI (new Message ("SCENE_ProgramLaunched", "next"));
-						}
-					}
-				} 
-				else {
-					if (EventGUI != null) {
-						EventGUI (new Message ("SCENE_ProgramLaunched", ""));
-					}
-				}
-				break;
-
-			case "SCENE_MenuStart":
+			if (currentScene == "SCENE_ProgramLaunched"){
+			} 
+			else if (currentScene == "SCENE_MenuStart"){
 				GUI.Label (new Rect (5, 5, 200, 30), "Start Menu");
 				if (GUI.Button (new Rect (5, 55, 200, 30), "New Game")) {
 					if (EventGUI != null) {
@@ -110,44 +90,33 @@ public class ControllerGUI : MonoBehaviour {
 					}
 
 				}
-				break;
-
-			case "SCENE_MenuNewGame":
-				break;
-
-			case "SCENE_NewGame":
-				break;
-
-			case "SCENE_MenuLoadGame":
-				break;
-
-			case "SCENE_Credits":
-				break;
-
-			case "SCENE_Quit":
-				break;
-
-			case "SCENE_PlayingGame":
-				break;
-
-			default:
-				if (GUI.Button (new Rect (Screen.width / 2 - 50, 5, 200, 30), "Click to Start Game")) {
-					if (EventGUI != null) {
-						EventGUI (new Message ("SCENE_Testing", "start"));
-					}
-				}
-
-				if (GUI.Button (new Rect (Screen.width / 2 - 50, 60, 100, 30), "Unpause")) {
-					if (EventGUI != null) {
-						EventGUI (new Message ("SCENE_Testing", "unpause"));
-					}
-				}
-				break;
+			}
+			else if (currentScene == "SCENE_MenuNewGame"){}
+			else if (currentScene == "SCENE_NewGame"){}
+			else if (currentScene == "SCENE_MenuLoadGame"){}
+			else if (currentScene == "SCENE_Credits"){}
+			else if (currentScene == "SCENE_Quit"){}
+			else if (currentScene == "SCENE_PlayingGame") {}
+			else {
+				EventGUI (new Message ("ERROR", ErrorStrings.GetError("CGUI0001")));
 			}
 		} catch (Exception e){
 			if (EventGUI != null) {
 				EventGUI (new Message ("ERROR", e.Message));
 			}
 		}
+
+		if (messageForGUI.scene.ToString () != "") {
+			if (messageForGUI.scene.ToString () == currentScene) {
+				
+			}
+			else {
+				EventGUI (new Message ("ERROR", ErrorStrings.GetError ("CGUI0002")));
+			}
+		}
+
+		//Clear message variables
+		messageForGUI = new Message();
+		messageCurrentScene = new Message ();
 	}
 }

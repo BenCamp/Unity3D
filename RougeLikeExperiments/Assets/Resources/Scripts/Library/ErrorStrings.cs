@@ -40,6 +40,12 @@ public static class ErrorStrings {
 		case "CG0008":
 			return "ControllerGame -> Update -> isMenuOpen -> FALSE -> PlayingGame: There shouldn't be any circumstance that isMenuOpen is false if you aren't in SCENE_PlayingGame";
 			break;
+		case "CG0009":
+			return "ControllerGame -> Update -> isMenuOpen -> TRUE -> SCENE_ProgramLaunched -> ControllerCinematic message: Cinematic shouldn't be sending this kind of data";
+			break;
+		case "CG0010":
+			return "ControllerGame -> Update -> isMenuOpen -> TRUE -> SCENE_ProgramLaunched -> ControllerCinematic message: Cinematic shouldn't be sending this kind of data";
+			break;
 		case "CI0001":
 			return "ControllerInput -> Update -> ControllerGame message: currentScene does not match provided Scene name";
 			break;

@@ -42,7 +42,6 @@ public class ControllerInput : MonoBehaviour {
 
 	}
 	void OnEnable (){
-		Debug.Log (gameObject.GetInstanceID ());
 		//Enable Listeners for events
 		ControllerGame.EventChangeScene += EventChangeScene;
 		ControllerGame.EventForInput += EventForInput;
@@ -94,17 +93,38 @@ public class ControllerInput : MonoBehaviour {
 			}
 		}
 
-		/*amIListeningForInput is TRUE
-		 * 	currentScene is SCENE_ProgramLaunched
+		/*currentScene is SCENE_ProgramLaunched
+		 * 	amIListeningForInput is TRUE
 		 *		User Input something
 		 *			TO Game: User input something
 		 * 		
 		 */
-		if (amIListeningForInput == true) {
-			if (currentScene == "SCENE_ProgramLaunched"){
+		if (currentScene == "SCENE_ProgramLaunched"){
+
+			if (amIListeningForInput == true) {
 				if (Input.anyKey == true) {
 					EventInput (new Message ("SCENE_ProgramLaunched", ""));
 					amIListeningForInput = false;
+				}
+			}
+		}
+
+		if (currentScene == "Scene_PlayingGame") {
+		}
+
+		if (currentScene == "working") {
+			if (Input.anyKey == true) {
+				if (Input.GetKey (KeyCode.UpArrow)) {
+
+				}
+				if (Input.GetKey (KeyCode.RightArrow)) {
+					EventInput (new Message ("working", "right"));
+				}
+				if (Input.GetKey (KeyCode.DownArrow)) {
+
+				}
+				if (Input.GetKey (KeyCode.LeftArrow)) {
+					EventInput (new Message ("working", "left"));
 				}
 			}
 		}

@@ -20,9 +20,9 @@ public class ControllerCamera : MonoBehaviour {
 	}
 	/***Monobehavior functions***/
 	void Start () {
-		
+		//TODO
 	}
 	void Update () {
-		
+		//TODO
 	}
 }

@@ -38,7 +38,7 @@ public class ControllerGUI : MonoBehaviour {
 	public Message messageCurrentScene = new Message();
 
 	/***Variables***/
-	string currentScene = "";
+	string currentScene = "working";
 	string currentData = "";
 
 	/***Monobehavior functions***/
@@ -66,37 +66,57 @@ public class ControllerGUI : MonoBehaviour {
 			if (currentScene == "SCENE_ProgramLaunched"){
 			} 
 			else if (currentScene == "SCENE_MenuStart"){
-				GUI.Label (new Rect (5, 5, 200, 30), "Start Menu");
-				if (GUI.Button (new Rect (5, 55, 200, 30), "New Game")) {
+				GUI.Label (new Rect (Screen.width / 2 - 30, 5, 200, 30), "Start Menu");
+				if (GUI.Button (new Rect (Screen.width / 2 - 30, 55, 200, 30), "New Game")) {
 					if (EventGUI != null) {
 						EventGUI (new Message("SCENE_MenuStart", "new"));
 					}
 				}
-				if (GUI.Button (new Rect (5, 90, 200, 30), "Load Game")) {
+				if (GUI.Button (new Rect (Screen.width / 2 - 30, 90, 200, 30), "Load Game")) {
 					if (EventGUI != null) {
 						EventGUI (new Message ("SCENE_MenuStart", "load"));
 					}
 						
 				}
-				if (GUI.Button (new Rect (5, 135, 200, 30), "Credits")) {
+				if (GUI.Button (new Rect (Screen.width / 2 - 30, 125, 200, 30), "Credits")) {
 					if (EventGUI != null) {
 						EventGUI (new Message("SCENE_MenuStart", "credits"));
 					}
 
 				}
-				if (GUI.Button (new Rect (5, 150, 200, 30), "Quit")) {
+				if (GUI.Button (new Rect (Screen.width / 2 - 30, 160, 200, 30), "Quit")) {
 					if (EventGUI != null) {
 						EventGUI (new Message("SCENE_MenuStart", "quit"));
 					}
 
 				}
 			}
-			else if (currentScene == "SCENE_MenuNewGame"){}
+			else if (currentScene == "SCENE_MenuNewGame"){
+				GUI.Label (new Rect (Screen.width / 2 - 30, 5, 200, 30), "New Game Menu");
+				if (GUI.Button (new Rect (Screen.width / 2 - 30, 160, 200, 30), "Go!")) {
+					if (EventGUI != null) {
+						EventGUI (new Message("SCENE_MenuNewGame", "go"));
+					}
+
+				}
+				if (GUI.Button (new Rect (Screen.width / 2 - 30, 195, 200, 30), "Cancel")) {
+					if (EventGUI != null) {
+						EventGUI (new Message("SCENE_MenuNewGame", "cancel"));
+					}
+
+				}
+			}
 			else if (currentScene == "SCENE_NewGame"){}
 			else if (currentScene == "SCENE_MenuLoadGame"){}
 			else if (currentScene == "SCENE_Credits"){}
 			else if (currentScene == "SCENE_Quit"){}
 			else if (currentScene == "SCENE_PlayingGame") {}
+
+			/* TODO
+			 * Remember to remove this "working" part when done the game...
+			 */
+			else if (currentScene == "working"){}
+
 			else {
 				EventGUI (new Message ("ERROR", ErrorStrings.GetError("CGUI0001")));
 			}

@@ -52,6 +52,8 @@
      <Compile Include="Assets\Resources\Scripts\Controllers\ControllerGUI.cs" />
      <Compile Include="Assets\Resources\Scripts\Controllers\ControllerGame.cs" />
      <Compile Include="Assets\Resources\Scripts\Controllers\ControllerInput.cs" />
+     <Compile Include="Assets\Resources\Scripts\Controllers\ControllerPlayer.cs" />
+     <Compile Include="Assets\Resources\Scripts\Controllers\ControllerWorld.cs" />
      <Compile Include="Assets\Resources\Scripts\Controllers\Utilities\Message.cs" />
      <Compile Include="Assets\Resources\Scripts\Library\ErrorStrings.cs" />
  <Reference Include="Facebook.Unity.Settings">

@@ -100,7 +100,7 @@ public class ControllerCinematic : MonoBehaviour {
 
 				//Splash already started and shouldn't have
 				else if (isSplashStarted == true) {
-					EventCinematic (new Message ("ERROR", "ControllerCinematic -> Update -> messageCurrentScene -> scene  -> Is not empty string  -> currentScene -> SCENE_ProgramLaunched: Splash Screen was already active."));
+					EventCinematic (new Message ("ERROR", ErrorStrings.GetError("CCIN0001")));
 				}
 			}
 			//Some other stuff probably
@@ -131,7 +131,7 @@ public class ControllerCinematic : MonoBehaviour {
 		if (messageForCinematic.scene.ToString () != "") {
 			//currentScene does not match provided scene name
 			if (messageForCinematic.scene.ToString () != currentScene) {
-				EventCinematic (new Message ("ERROR", "ControllerCinematic -> Update -> messageForCinematic -> scene is not empty: Missed a scene change."));
+				EventCinematic (new Message ("ERROR", ErrorStrings.GetError("CCIN0002")));
 			}
 
 			//Save the data from the message and clear the message
@@ -144,10 +144,10 @@ public class ControllerCinematic : MonoBehaviour {
 						currentVideo.Stop ();
 						currentVideo.clip = screenTitle;
 						currentVideo.Play ();
+						currentData = "";
 					}
 					else {
-						EventCinematic (new Message ("ERROR", "ControllerCinematic -> Update -> currentScene is SCENE_ProgramLaunched -> currentData is \"end splash\": " +
-							"Either the Wrong clip is loaded or the ControllerGame sent the wrong message"));
+						EventCinematic (new Message ("ERROR", ErrorStrings.GetError("CCIN0003")));
 					}
 				}
 
@@ -157,14 +157,12 @@ public class ControllerCinematic : MonoBehaviour {
 						EventCinematic (new Message ("SCENE_ProgramLaunched", "done title"));
 					}
 					else {
-						EventCinematic (new Message ("ERROR", "ControllerCinematic -> Update -> currentScene is SCENE_ProgramLaunched -> currentData is \"end title\": " +
-							"Either the Wrong clip is loaded or the ControllerGame sent the wrong message"));
+						EventCinematic (new Message ("ERROR", ErrorStrings.GetError("CCIN0004")));
 					}
 				}
 
 				else {
-					EventCinematic (new Message ("ERROR", "ControllerCinematic -> Update -> messageForCinematic -> scene is not empty  -> currentScene equals SCENE_ProgramLaunched: " +
-						"Game shouldn't be sending this kind of data"));
+					EventCinematic (new Message ("ERROR", ErrorStrings.GetError("CCIN0005")));
 				}
 			}
 		}

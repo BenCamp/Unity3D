@@ -16,8 +16,29 @@ using UnityEngine;
 public static class ErrorStrings {
 	public static string GetError(string code){
 		switch (code) {
+		case "CB0001":
+			return "ControllerBuilder -> Update -> messageCurrentScene -> scene is not empty: Duplicate SCENE_ProgramLaunched message.";
+			break;
+		case "CCAM0001":
+			return "";
+			break;
+		case "CCIN0001":
+			return "ControllerCinematic -> Update -> messageCurrentScene -> scene  -> Is not empty string  -> currentScene -> SCENE_ProgramLaunched: Splash Screen was already active.";
+			break;
+		case "CCIN0002":
+			return "ControllerCinematic -> Update -> messageForCinematic -> scene is not empty: Missed a scene change.";
+			break;
+		case "CCIN0003":
+			return "ControllerCinematic -> Update -> currentScene is SCENE_ProgramLaunched -> currentData is \"end splash\": Either the Wrong clip is loaded or the ControllerGame sent the wrong message";
+			break;
+		case "CCIN0004":
+			return "ControllerCinematic -> Update -> currentScene is SCENE_ProgramLaunched -> currentData is \"end title\": Either the Wrong clip is loaded or the ControllerGame sent the wrong message";
+			break;
+		case "CCIN0005":
+			return "ControllerCinematic -> Update -> messageForCinematic -> scene is not empty  -> currentScene equals SCENE_ProgramLaunched: Game shouldn't be sending this kind of data";
+			break;
 		case "CG0001":
-				return "ControllerGame -> Update -> isMenuOpen -> TRUE -> SCENE_ProgramLaunched -> ControllerBuilder message: Builder shouldn't be sending this kind of data";
+			return "ControllerGame -> Update -> isMenuOpen -> TRUE -> SCENE_ProgramLaunched -> ControllerBuilder message: Builder shouldn't be sending this kind of data";
 			break;
 		case "CG0002":
 			return "ControllerGame -> Update -> isMenuOpen -> TRUE -> SCENE_ProgramLaunched -> ContorllerBuilder message: Builder shouldn't be sending this kind of scene";

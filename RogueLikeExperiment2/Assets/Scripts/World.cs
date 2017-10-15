@@ -9,26 +9,13 @@ using Path = System.Collections.Generic.List<ClipperLib.IntPoint>;
 using Paths = System.Collections.Generic.List<System.Collections.Generic.List<ClipperLib.IntPoint>>;
 
 public class World : MonoBehaviour {
-
 	GameObject player;
 	Rigidbody2D rig2DPlayer;
 
 	GameObject level;
 	PolygonCollider2D levelCollider;
+	ShowTerrain levelTerrain;
 	List<Level> levels = new List<Level> ();
-
-
-	const float MAXHEIGHT = 40f;
-	const float MINHEIGHT = 20f;
-	const float MAXWIDTH = 80f;
-	const float MINWIDTH = 20f;
-
-	float MAXROOMWIDTH = 10f;
-	float MINROOMWIDTH = 4f;
-	float MAXROOMHEIGHT  = 10f;
-	float MINROOMHEIGHT = 4f;
-	float MAXTRIES = 50f;
-	float MAXROOMS = 9f;
 
 	int currentlyLoadedLevel = -1;
 
@@ -40,35 +27,29 @@ public class World : MonoBehaviour {
 	void Start () {
 		player = GameObject.Find ("PlayerSprite");
 		rig2DPlayer = player.GetComponent<Rigidbody2D> ();
-
-		level = gameObject.transform.FindChild ("Level").gameObject;
+		level = gameObject.transform.Find ("Level").gameObject;
+		levelTerrain = level.gameObject.GetComponent<ShowTerrain> ();
 		levelCollider = level.gameObject.GetComponent<PolygonCollider2D> ();
 		levelCollider.pathCount = 0;
 		levels.Insert(0, GenerateLevel (0, -1, 1));
 		LoadLevel (0);
-
 		rig2DPlayer.transform.position = new Vector3 ( playerStartX, playerStartY, rig2DPlayer.transform.position.z);
-
-
 	}
 
-	//TODO
+
 	public void AddLevel (Level level, int position){
 		levels.Insert (position, level);
 	}
-
 
 
 	public void DestroyLevel (int position){
 		levels.RemoveAt (position);
 	}
 
-	//TODO UPDATE LEVELS MAP
-
 
 	public void LoadLevel (int levelNum) {
-		float width = levels [levelNum].width;
-		float height = levels [levelNum].height;
+		int width = levels [levelNum].width;
+		int height = levels [levelNum].height;
 
 		levelCollider.pathCount = 0;
 		int num = 0;
@@ -78,18 +59,17 @@ public class World : MonoBehaviour {
 			num++;
 		}
 		levelCollider.pathCount--;
+		levelTerrain.UpdateTerrainImage (width, height, levels[levelNum].paths, Constants.PIXELSIZE);
 	}
 
 
 	public Level GenerateLevel (int levelID, int directionFromSpawningLevel, int difficulty){
 		Level level = new Level ();
 		level.center = new Vector2 (0, 0);
-		level.height = Random.Range (MINHEIGHT, MAXHEIGHT);
-		level.width = Random.Range (MINWIDTH, MAXWIDTH);
+		level.height = Random.Range (Constants.MINHEIGHT, Constants.MAXHEIGHT);
+		level.width = Random.Range (Constants.MINWIDTH, Constants.MAXWIDTH);
 
 		Path tempPath = new Path ();
-
-		Debug.Log ("Level: Width " + level.width + ", Height " + level.height);
 
 		//Add exterior boundary
 		level.paths.Add (PathFunctions.GetRectPath (level.center, level.width + 2, level.height + 2));
@@ -98,7 +78,7 @@ public class World : MonoBehaviour {
 		level.paths.Add (GenerateStartingRoom (directionFromSpawningLevel, level.width, level.height));
 
 		// Build other rooms
-		for (int i = 0, j = 0; i < MAXTRIES && j < MAXROOMS; i++){
+		for (int i = 0, j = 0; i < Constants.MAXTRIES && j < Constants.MAXROOMS; i++){
 			tempPath = GenerateRoom (level.width, level.height);
 
 			if (!PathFunctions.DoPathsOverlap (level.paths [1], tempPath) && PathFunctions.DoPathsOverlap (level.paths [0], tempPath)) {
@@ -112,7 +92,7 @@ public class World : MonoBehaviour {
 			// TODO Build hallways
 			// Currently just testing
 			for (int i = 0, j = 1; j < roomCenters.Count; i++, j++) {
-				level.paths.Add (PathFunctions.GetRotatedRectPath (roomCenters [i], roomCenters [j], 5f));
+				//level.paths.Add (PathFunctions.GetRotatedRectPath (roomCenters [i], roomCenters [j], 5f));
 			}
 		}
 
@@ -133,40 +113,43 @@ public class World : MonoBehaviour {
 		return level;
 	}
 
-	public Path GenerateStartingRoom (int directionFromSpawningLevel, float width, float height){
+
+	public Path GenerateStartingRoom (int directionFromSpawningLevel, int width, int height){
 		Vector2 rDimensions = FindRandomRoomWidthHeight();
 		Vector2 rCenter = new Vector2();
 		Path solution = new Path ();
 
 		//First Level
 		if (directionFromSpawningLevel == -1) {
-			rCenter = FindRandomCenterInRange (width, height, rDimensions.x, rDimensions.y);
+			rCenter = FindRandomCenterInRange (width, height, (int) rDimensions.x, (int) rDimensions.y);
 			roomCenters.Add (rCenter);
 			solution = PathFunctions.GetRectPath (rCenter, rDimensions.x, rDimensions.y);
 		}
 
 		playerStartX = rCenter.x;
-		playerStartY = rCenter.y - (rDimensions.y / 2) + 0.3f;
+		playerStartY = rCenter.y - (rDimensions.y / 2) + Constants.PLAYERHEIGHT / 2;
 		return solution;
 	
 	}
 
 
-	public Path GenerateRoom (float width, float height){
+	public Path GenerateRoom (int width, int height){
 		Vector2 rDimensions = FindRandomRoomWidthHeight();
 		Vector2 rCenter = new Vector2();
 		Path solution = new Path ();
-		rCenter = FindRandomCenterInRange (width, height, rDimensions.x, rDimensions.y);
+		rCenter = FindRandomCenterInRange (width, height, (int) rDimensions.x, (int) rDimensions.y);
 		tempCenter = rCenter;
 		solution = PathFunctions.GetRectPath (rCenter, rDimensions.x, rDimensions.y);
 		return solution;
 	}
 
+
 	public Vector2 FindRandomRoomWidthHeight () {
-		return new Vector2 (Random.Range (MINROOMWIDTH, MAXROOMWIDTH), Random.Range (MINROOMHEIGHT, MAXROOMHEIGHT));
+		return new Vector2 (Random.Range (Constants.MINROOMWIDTH, Constants.MAXROOMWIDTH), Random.Range (Constants.MINROOMHEIGHT, Constants.MAXROOMHEIGHT));
 	}
 
-	public Vector2 FindRandomCenterInRange (float width, float height, float rWidth, float rHeight){
+
+	public Vector2 FindRandomCenterInRange (int width, int height, int rWidth, int rHeight){
 
 		return new Vector2 (
 			Random.Range (-(width / 2) + (rWidth / 2) , (width / 2) - (rWidth / 2))

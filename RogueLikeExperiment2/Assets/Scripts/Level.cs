@@ -9,9 +9,11 @@ using Paths = System.Collections.Generic.List<System.Collections.Generic.List<Cl
 public class Level {
 
 	public Paths paths = new Paths ();
+	//Object list
+	//Monster list
 	public Vector2 center { get ; set; }
-	public float height { get; set; }
-	public float width { get; set; }
+	public int height { get; set; }
+	public int width { get; set; }
 	public int difficulty { get; set; }
 
 	public int self { get; set; }

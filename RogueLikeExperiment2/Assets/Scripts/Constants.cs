@@ -12,7 +12,4 @@
 	public const int MINROOMHEIGHT = 100 * PIXELSIZE;
 	public const int MAXTRIES = 50;
 	public const int MAXROOMS = 9;
-
-
-
 }

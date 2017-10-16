@@ -35,17 +35,14 @@ public class World : MonoBehaviour {
 		LoadLevel (0);
 		rig2DPlayer.transform.position = new Vector3 ( playerStartX, playerStartY, rig2DPlayer.transform.position.z);
 	}
-
-
+		
 	public void AddLevel (Level level, int position){
 		levels.Insert (position, level);
 	}
-
-
+		
 	public void DestroyLevel (int position){
 		levels.RemoveAt (position);
 	}
-
 
 	public void LoadLevel (int levelNum) {
 		int width = levels [levelNum].width;
@@ -61,8 +58,7 @@ public class World : MonoBehaviour {
 		levelCollider.pathCount--;
 		levelTerrain.UpdateTerrainImage (width, height, levels[levelNum].paths, Constants.PIXELSIZE);
 	}
-
-
+		
 	public Level GenerateLevel (int levelID, int directionFromSpawningLevel, int difficulty){
 		Level level = new Level ();
 		level.center = new Vector2 (0, 0);
@@ -87,14 +83,8 @@ public class World : MonoBehaviour {
 				j++;
 			}
 		}
-		// Sanity Check
-		if (roomCenters.Count > 1) {
-			// TODO Build hallways
-			// Currently just testing
-			for (int i = 0, j = 1; j < roomCenters.Count; i++, j++) {
-				//level.paths.Add (PathFunctions.GetRotatedRectPath (roomCenters [i], roomCenters [j], 5f));
-			}
-		}
+
+		//TODO build hallways
 
 
 		Paths tempPaths = new Paths ();
@@ -112,7 +102,6 @@ public class World : MonoBehaviour {
 		}
 		return level;
 	}
-
 
 	public Path GenerateStartingRoom (int directionFromSpawningLevel, int width, int height){
 		Vector2 rDimensions = FindRandomRoomWidthHeight();
@@ -132,7 +121,6 @@ public class World : MonoBehaviour {
 	
 	}
 
-
 	public Path GenerateRoom (int width, int height){
 		Vector2 rDimensions = FindRandomRoomWidthHeight();
 		Vector2 rCenter = new Vector2();
@@ -142,12 +130,10 @@ public class World : MonoBehaviour {
 		solution = PathFunctions.GetRectPath (rCenter, rDimensions.x, rDimensions.y);
 		return solution;
 	}
-
-
+		
 	public Vector2 FindRandomRoomWidthHeight () {
 		return new Vector2 (Random.Range (Constants.MINROOMWIDTH, Constants.MAXROOMWIDTH), Random.Range (Constants.MINROOMHEIGHT, Constants.MAXROOMHEIGHT));
 	}
-
 
 	public Vector2 FindRandomCenterInRange (int width, int height, int rWidth, int rHeight){
 

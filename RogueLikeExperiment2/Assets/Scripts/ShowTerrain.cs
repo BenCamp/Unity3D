@@ -21,7 +21,37 @@ public class ShowTerrain : MonoBehaviour{
 		pc = gameObject.GetComponent<PolygonCollider2D> ();
 		sr = gameObject.GetComponent<SpriteRenderer> ();
 	}
-	
+
+	public void UpdateTerrainImage (int width, int height, Paths paths, int pixelSize){
+		texture = new Texture2D (width, height);
+		Color[] colors = new Color[width * height];
+
+		for (int i = 0; i < height; i++) {
+
+			for (int j = 0; j < width; j++) {
+				if (pc.OverlapPoint (new Vector2 (j, i))) {
+					colors [i * width + j] = terrain;
+				}
+				else {
+					colors [i * width + i] = clear;
+				}
+			}
+		}
+
+		texture.SetPixels (colors);
+		texture.alphaIsTransparency = true;
+
+		texture.Apply ();
+
+		sr.sprite = Sprite.Create (texture, new Rect (new Vector2 (0, 0), new Vector2 (width, height)), new Vector2 (.5f, .5f), 1f);
+
+	}
+
+	/*
+	 * 
+	 * 
+	 * For Images based on the center of the object, not the lower left corner.
+	 * 
 	public void UpdateTerrainImage (int width, int height, Paths paths, int pixelSize) { 
 		texture = new Texture2D(width, height);
 		Color[] colors = new Color[width * height];
@@ -44,4 +74,5 @@ public class ShowTerrain : MonoBehaviour{
 
 		sr.sprite = Sprite.Create (texture, new Rect (new Vector2 (0, 0), new Vector2 (width, height)), new Vector2 (.5f, .5f), 1f);
 	}
+	*/
 }

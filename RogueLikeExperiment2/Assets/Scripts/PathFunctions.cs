@@ -128,7 +128,6 @@ public static class PathFunctions {
 			angle = Mathf.Rad2Deg * Mathf.Atan (opp / adj);
 		}
 
-		Debug.Log ("Angle: " + angle + ", Cos: " +  Mathf.Cos (angle) + ", Sin: " +  Mathf.Sin(angle));
 
 		float xLength = ( Mathf.Cos (angle)) * (diameter / 2);
 		float yLength = ( Mathf.Sin (angle)) * (diameter / 2);

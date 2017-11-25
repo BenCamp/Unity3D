@@ -17,9 +17,10 @@ public class World : MonoBehaviour {
 	ShowTerrain levelTerrain;
 	List<Level> levels = new List<Level> ();
 
+
 	int currentlyLoadedLevel = -1;
 
-	public List <Vector2> roomCenters = new List<Vector2> ();
+	public int[,] map;
 	Vector2 tempCenter = new Vector2();
 
 	float playerStartX, playerStartY;
@@ -31,11 +32,19 @@ public class World : MonoBehaviour {
 		levelTerrain = level.gameObject.GetComponent<ShowTerrain> ();
 		levelCollider = level.gameObject.GetComponent<PolygonCollider2D> ();
 		levelCollider.pathCount = 0;
-		AddLevel (0, LevelGenerator.NewLevel ());
+
+		AddLevel (0, LevelGenerator.MakeLevel ());
 		LoadLevel (0);
 		rig2DPlayer.transform.position = new Vector3 ( playerStartX, playerStartY, rig2DPlayer.transform.position.z);
 	}
-		
+
+	public void CreateLevel () {
+		levelCollider.pathCount = 0;
+		AddLevel (levels.Count, LevelGenerator.MakeLevel ());
+		LoadLevel (levels.Count - 1);
+		rig2DPlayer.transform.position = new Vector3 ( playerStartX, playerStartY, rig2DPlayer.transform.position.z);
+	}
+
 	public void AddLevel (int position, Level level){
 		levels.Insert (position, level);
 	}
@@ -47,16 +56,16 @@ public class World : MonoBehaviour {
 	public void LoadLevel (int levelNum) {
 		int width = levels [levelNum].width;
 		int height = levels [levelNum].height;
-
 		levelCollider.pathCount = 0;
 		int num = 0;
 		foreach (Path p in levels[levelNum].paths) {
 			levelCollider.SetPath (num, PathFunctions.ConvertVecPathToVecArray(PathFunctions.ConvertPathToVecPath(p)));
+
 			levelCollider.pathCount++;
 			num++;
 		}
 		levelCollider.pathCount--;
-		levelTerrain.UpdateTerrainImage (width, height, levels[levelNum].paths, Constants.PIXELSIZE);
+		//levelTerrain.UpdateTerrainImage (width, height, levels[levelNum].paths);
 	}
 		
 

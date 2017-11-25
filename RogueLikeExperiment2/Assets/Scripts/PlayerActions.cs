@@ -10,11 +10,11 @@ public class PlayerActions : MonoBehaviour {
 	Animator animator;
 
 	/***Variables***/
-	public int xAxisForce = 1000 * Constants.PIXELSIZE;
-	public int xAxisMaxVelocity = 7 * Constants.PIXELSIZE;
+	public int xAxisForce = 1000;
+	public int xAxisMaxVelocity = 7;
 
-	public int yAxisForce = 20000 * Constants.PIXELSIZE;
-	public int yAxisMaxVelocity = 10 * Constants.PIXELSIZE;
+	public int yAxisForce = 20000;
+	public int yAxisMaxVelocity = 10;
 
 	public int jumpDelay = 20;
 	int jumpDelayNow = 0;

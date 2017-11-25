@@ -11,7 +11,7 @@ public class Level {
 	public Paths paths = new Paths ();
 	//Object list
 	//Monster list
-	public Vector2 center { get ; set; }
+
 	public int height { get; set; }
 	public int width { get; set; }
 	public int difficulty { get; set; }

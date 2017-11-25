@@ -22,8 +22,10 @@ public class ShowTerrain : MonoBehaviour{
 		sr = gameObject.GetComponent<SpriteRenderer> ();
 	}
 
-	public void UpdateTerrainImage (int width, int height, Paths paths, int pixelSize){
-		texture = new Texture2D (width, height);
+	public void UpdateTerrainImage (int width, int height, Paths paths){
+		width = width * Constants.PLAYERHEIGHT;
+		height = height * Constants.PLAYERHEIGHT;
+		texture = new Texture2D (width, height, TextureFormat.ARGB32, true);
 		Color[] colors = new Color[width * height];
 
 		for (int i = 0; i < height; i++) {
@@ -33,17 +35,15 @@ public class ShowTerrain : MonoBehaviour{
 					colors [i * width + j] = terrain;
 				}
 				else {
-					colors [i * width + i] = clear;
+					colors [i * width + j] = clear;
 				}
 			}
 		}
 
 		texture.SetPixels (colors);
-		texture.alphaIsTransparency = true;
-
 		texture.Apply ();
 
-		sr.sprite = Sprite.Create (texture, new Rect (new Vector2 (0, 0), new Vector2 (width, height)), new Vector2 (.5f, .5f), 1f);
+		sr.sprite = Sprite.Create (texture, new Rect (new Vector2 (0, 0), new Vector2 (width, height)), new Vector2 (0, 0), 1f);
 
 	}
 

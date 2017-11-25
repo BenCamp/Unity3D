@@ -9,7 +9,7 @@
  * 
  */
 
-
+#region Using
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,131 +20,269 @@ using VecPath = System.Collections.Generic.List<UnityEngine.Vector2>;
 using VecPaths = System.Collections.Generic.List<System.Collections.Generic.List<UnityEngine.Vector2>>;
 using Path = System.Collections.Generic.List<ClipperLib.IntPoint>;
 using Paths = System.Collections.Generic.List<System.Collections.Generic.List<ClipperLib.IntPoint>>;
+#endregion
+#region My Structs and Whatnot
 
-public static class LevelGenerator {
-	public static Level NewLevel (){
+struct Rooms { 
+	public Room [] rooms;
+}
+
+struct Room {
+	public Vector2 upperLeft;
+	public int width;
+	public int height;
+}
+
+struct MapPointAndDirection {
+	public Vector2 mapPoint;
+	public byte direction;
+}
+
+struct PathAndDirection {
+	public Path path;
+	public byte direction;
+}
+
+
+public enum Direction : byte { Up = 1, Right, Down, Left };
+#endregion
+public class LevelGenerator {
+
+	#region Main
+	public Level MakeLevel (){
 		Level tempLevel = new Level();
 
+		//Map Stuff
 		int[,] tempMap = GenerateIntMap ();
+		tempLevel.width = tempMap.GetLength (0);
+		tempLevel.height = tempMap.GetLength (1);
+		tempMap = GenerateRooms (tempMap);
 
-		Paths tempPath = GeneratePaths (tempMap);
-
+		//Path Stuff
+		tempLevel.paths = MakePathsFromMap (tempMap);
 
 		return tempLevel;
 	}
 
-	public static int[,] GenerateIntMap () {
-		int width = (int)Random.Range (0, Constants.MAXWIDTH);
-		int height = (int) Random.Range (0, Constants.MAXHEIGHT);
+
+	#endregion
+	#region Map
+	public int[,] MakeMap () {
+		int[,] solution = GenerateIntMap ();
+		Rooms rooms = GenerateRooms();
+
+		return solution;
+	}
+
+	int[,] GenerateIntMap () {
+		int width = (int)Random.Range (Constants.MINWIDTH, Constants.MAXWIDTH);
+		int height = (int) Random.Range (Constants.MINHEIGHT, Constants.MAXHEIGHT);
 
 		int [,] tempMap = new int[width,height];
 
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
-				tempMap [i, j] = 1;
+				tempMap [i, j] = 0;
 			}
 		}
-
 		return tempMap;
 	}
 
-	static Paths GeneratePaths (int[,] map){
+	Rooms GenerateRooms () {
+		Rooms solution = new Rooms ();
+		bool goodRoom = true;
+
+		Room tempRoom = new Room ();
+
+		return solution;
+	}
+
+	Room GenerateRoom (int [,] map) {
+		Room tempRoom = new Room ();
+		tempRoom.width = Random.Range (Constants.MINROOMWIDTH, Constants.MAXROOMWIDTH);
+		tempRoom.height = Random.Range (Constants.MINROOMHEIGHT, Constants.MAXROOMHEIGHT);
+		tempRoom.upperLeft = new Vector2 (Random.Range (1 , map.GetLength (0) - 2 - tempRoom.width), Random.Range (1, map.GetLength (1) - 2 - tempRoom.height));
+		return tempRoom;
+	}
+
+	int [,] PutRoomsInMap (int[,] map, Rooms rooms){
+		int[,] solution = map;
+		return solution;
+	}
+	#endregion
+	#region Paths
+
+	/* Will start from the bottom left most point. */
+	Paths MakePathsFromMap (int[,] map){
+		bool done = false;
 		Paths tempPaths = new Paths ();
 		Path tempPath = new Path ();
 
-		tempPaths.Add (PathFunctions.GetRectPath (new Vector2 (map.GetLength(0) / 2, map.GetLength (1) / 2), map.GetLength (0) + 2, map.GetLength (1) + 2));	
+		/* Add outer box */
+		tempPaths.Add (PathFunctions.GetRectPath (new Vector2 (map.GetLength(0) * Constants.PLAYERHEIGHT / 2, map.GetLength (1) * Constants.PLAYERHEIGHT  / 2), map.GetLength (0) * Constants.PLAYERHEIGHT, map.GetLength (1) * Constants.PLAYERHEIGHT));
 
-		tempPaths.Add (PathFunctions.GetRectPath (new Vector2 (map.GetLength(0) / 2, map.GetLength (1) / 2), map.GetLength (0), map.GetLength (1)));
+		/* Start path */
+		Vector2 startPath = FindStartOfPath (map);
+		if (startPath.y != 0) {// Indicates that a suitable point was found
+			tempPath.Add (BottomLeft(startPath));
+			PathAndDirection checkingToTheRightOfStart = FindPath (startPath, new Vector2 (startPath.x + 1, startPath.y), tempPath, map, 2);
 
+		}
+
+		tempPaths.Add (tempPath);
 		return tempPaths;
 	}
 
-}
-/*
- * Old code for testing
- * 
- * dpublic Level GenerateLevel (int levelID, int directionFromSpawningLevel, int difficulty){
-		Level level = new Level ();
-		level.center = new Vector2 (0, 0);
-		level.height = Random.Range (Constants.MINHEIGHT, Constants.MAXHEIGHT);
-		level.width = Random.Range (Constants.MINWIDTH, Constants.MAXWIDTH);
-
-		Path tempPath = new Path ();
-
-		//Add exterior boundary
-		level.paths.Add (PathFunctions.GetRectPath (level.center, level.width + 2, level.height + 2));
-
-		//Add starting room
-		level.paths.Add (GenerateStartingRoom (directionFromSpawningLevel, level.width, level.height));
-
-		// Build other rooms
-		for (int i = 0, j = 0; i < Constants.MAXTRIES && j < Constants.MAXROOMS; i++){
-			tempPath = GenerateRoom (level.width, level.height);
-
-			if (!PathFunctions.DoPathsOverlap (level.paths [1], tempPath) && PathFunctions.DoPathsOverlap (level.paths [0], tempPath)) {
-				level.paths.Add (tempPath);
-				roomCenters.Add (tempCenter);
-				j++;
+	/* Finds the LOWEST LEFTMOST Open Position on the Map */
+	Vector2 FindStartOfPath (int [,] map) {
+		Vector2 tempPath = new Vector2 (1, map.GetLength(1) - 2);
+		while (map [(int) tempPath.x, (int) tempPath.y] != 1 && tempPath.y != 1) {
+			if (tempPath.x <= map.GetLength (0) - 3) {
+				tempPath.x++;
+			}
+			else {
+				tempPath.x = 1;
+				tempPath.y--;
 			}
 		}
-
-		//TODO build hallways
-
-
-		Paths tempPaths = new Paths ();
-		for (int i = 1; i < level.paths.Count; i++) {
-			tempPaths.Add (level.paths[i]);
-		}
-
-		tempPaths = PathFunctions.CombinePaths (tempPaths);
-
-		for (int i = level.paths.Count - 1; i > 0; i--) {
-			level.paths.RemoveAt (i);
-		}
-		foreach (Path path in tempPaths){
-			level.paths.Add (path);
-		}
-		return level;
+		return tempPath;
 	}
 
-	public Path GenerateStartingRoom (int directionFromSpawningLevel, int width, int height){
-		Vector2 rDimensions = FindRandomRoomWidthHeight();
-		Vector2 rCenter = new Vector2();
-		Path solution = new Path ();
-
-		//First Level
-		if (directionFromSpawningLevel == -1) {
-			rCenter = FindRandomCenterInRange (width, height, (int) rDimensions.x, (int) rDimensions.y);
-			roomCenters.Add (rCenter);
-			solution = PathFunctions.GetRectPath (rCenter, rDimensions.x, rDimensions.y);
+	PathAndDirection FindPath (Vector2 start, Vector2 checking, Path path, int [,] map, byte direction){
+		PathAndDirection solution = new PathAndDirection ();
+		Debug.Log ("X = " + checking.x + ", Y = " + checking.y);
+		if (start == checking) {
+			solution.path = path;
+			solution.direction = direction;
+			return solution;
 		}
 
-		playerStartX = rCenter.x;
-		playerStartY = rCenter.y - (rDimensions.y / 2) + Constants.PLAYERHEIGHT / 2;
+		switch (direction) {
+
+		case 1://Entered going up
+			if (map [(int) checking.x + 1, (int) checking.y] == 1) { //Right sector is open
+				path.Add (BottomRight (checking));
+				solution = FindPath (start, new Vector2 ((int) checking.x + 1, (int) checking.y), path, map, 2);
+			}
+			else if (map [(int) checking.x, (int) checking.y - 1] == 1) { //Up sector is open
+				solution = FindPath (start, new Vector2 ((int) checking.x, (int) checking.y - 1), path, map, 1);
+			}
+			else if (map [(int) checking.x - 1, (int) checking.y] == 1) { //Left sector is open
+				path.Add (TopRight(checking));
+				solution = FindPath (start, new Vector2 ((int) checking.x - 1, (int) checking.y), path, map, 4);
+			}
+			else { // End of a hallway or something, go back
+				path.Add (TopRight(checking));
+				path.Add (TopLeft (checking));
+				solution = FindPath(start, new Vector2 ((int) checking.x, (int) checking.y + 1), path, map, 3);
+			}
+			break;
+
+		case 2: //Entered going right
+			if (map [(int) checking.x, (int) checking.y + 1] == 1) { //Down sector is open
+				path.Add (BottomLeft (checking));
+				solution = FindPath (start, new Vector2 ((int) checking.x, (int) checking.y - 1), path, map, 3);
+			}
+			else if (map [(int) checking.x + 1, (int) checking.y] == 1) { //Right sector is open
+				solution = FindPath (start, new Vector2 ((int) checking.x + 2, (int) checking.y), path, map, 2);
+			}
+			else if (map [(int) checking.x, (int) checking.y - 1] == 1) { //Up sector is open
+				path.Add (BottomRight (checking));
+				solution = FindPath (start, new Vector2 ((int) checking.x, (int) checking.y - 1), path, map, 1);
+			}
+			else {
+				path.Add (BottomRight (checking));
+				path.Add (TopRight (checking));
+				solution = FindPath (start, new Vector2 ((int) checking.x - 1, (int) checking.y), path, map, 4);
+			}
+			break;
+
+		case 3: //Entered going down
+			if (map [(int) checking.x - 1, (int) checking.y] == 1) { //Left sector is open
+				path.Add (TopLeft (checking));
+				solution = FindPath (start, new Vector2 ((int) checking.x - 1, (int) checking.y), path, map, 4);
+			}
+			else if (map [(int) checking.x, (int) checking.y + 1] == 1) { //Down sector is open
+				solution = FindPath (start, new Vector2 ((int) checking.x, (int) checking.y + 1), path, map, 3);
+			}
+			else if (map [(int) checking.x + 1, (int) checking.y] == 1) { //Right sector is open
+				path.Add (BottomLeft (checking));
+				solution = FindPath (start, new Vector2 ((int) checking.x + 1, (int) checking.y), path, map, 2);
+			}
+			else {
+				path.Add (BottomLeft (checking));
+				path.Add (BottomRight (checking));
+				solution = FindPath (start, new Vector2 ((int) checking.x, (int) checking.y - 1), path, map, 1);
+			}
+			break;
+
+		case 4: // Entered going left
+			if (map [(int) checking.x, (int) checking.y - 1] == 1) { //Up sector is open
+				path.Add (TopRight (checking));
+				solution = FindPath (start, new Vector2 ((int) checking.x, (int) checking.y - 1), path, map, 1);
+			}
+			else if (map [(int) checking.x - 1, (int) checking.y] == 1) { //Left sector is open
+				solution = FindPath (start, new Vector2 ((int) checking.x - 1, (int) checking.y), path, map, 4);
+			}
+			else if (map [(int) checking.x, (int) checking.y + 1] == 1) { //Down sector is open
+				path.Add (TopLeft (checking));
+				solution = FindPath (start, new Vector2 ((int) checking.x, (int) checking.y + 1), path, map, 3);
+			}
+			else {
+				path.Add (TopLeft (checking));
+				path.Add (BottomLeft (checking));
+				solution = FindPath (start, new Vector2 ((int) checking.x + 1, (int) checking.y), path, map, 2);
+			}
+			break;
+
+		default: // Probably an error
+
+			break;
+		}
+
 		return solution;
-	
 	}
 
-	public Path GenerateRoom (int width, int height){
-		Vector2 rDimensions = FindRandomRoomWidthHeight();
-		Vector2 rCenter = new Vector2();
-		Path solution = new Path ();
-		rCenter = FindRandomCenterInRange (width, height, (int) rDimensions.x, (int) rDimensions.y);
-		tempCenter = rCenter;
-		solution = PathFunctions.GetRectPath (rCenter, rDimensions.x, rDimensions.y);
-		return solution;
-	}
-		
-	public Vector2 FindRandomRoomWidthHeight () {
-		return new Vector2 (Random.Range (Constants.MINROOMWIDTH, Constants.MAXROOMWIDTH), Random.Range (Constants.MINROOMHEIGHT, Constants.MAXROOMHEIGHT));
+	IntPoint BottomLeft (Vector2 point){
+		IntPoint tempPoint = new IntPoint ();
+		tempPoint.X = ((int)point.x * Constants.PLAYERHEIGHT) * 10000;
+		tempPoint.Y = ((int)point.y * Constants.PLAYERHEIGHT + Constants.PLAYERHEIGHT) * 10000;
+		return tempPoint;
 	}
 
-	public Vector2 FindRandomCenterInRange (int width, int height, int rWidth, int rHeight){
-
-		return new Vector2 (
-			Random.Range (-(width / 2) + (rWidth / 2) , (width / 2) - (rWidth / 2))
-			, 
-			Random.Range (-(height / 2) + (rHeight / 2), (height / 2) - (rHeight / 2))
-		);
+	IntPoint BottomRight (Vector2 point) {
+		IntPoint tempPoint = new IntPoint ();
+		tempPoint.X = ((int)point.x * Constants.PLAYERHEIGHT + Constants.PLAYERHEIGHT) * 10000;
+		tempPoint.Y = ((int)point.y * Constants.PLAYERHEIGHT + Constants.PLAYERHEIGHT) * 10000;
+		return tempPoint;
 	}
-*/
+
+	static IntPoint TopLeft (Vector2 point){
+		IntPoint tempPoint = new IntPoint ();
+		tempPoint.X = ((int)point.x * Constants.PLAYERHEIGHT) * 10000;
+		tempPoint.Y = ((int)point.y * Constants.PLAYERHEIGHT) * 10000;
+		return tempPoint;
+	}
+
+
+	IntPoint TopRight (Vector2 point) {
+		IntPoint tempPoint = new IntPoint ();
+		tempPoint.X = ((int)point.x * Constants.PLAYERHEIGHT + Constants.PLAYERHEIGHT) * 10000;
+		tempPoint.Y = ((int)point.y * Constants.PLAYERHEIGHT) * 10000;
+		return tempPoint;
+	}
+
+
+
+	#endregion
+	#region Environmentals
+	#endregion
+	#region Objects
+	#endregion
+	#region Neutrals
+	#endregion
+	#region Enemy
+	#endregion
+	#region Friendly
+	#endregion
+}

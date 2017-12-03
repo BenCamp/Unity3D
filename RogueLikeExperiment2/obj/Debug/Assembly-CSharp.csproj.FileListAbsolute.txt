@@ -23,7 +23,6 @@ C:\Users\PC\Documents\GitHub\Unity3D\RogueLikeExperiment2\Temp\bin\Debug\nunit.f
 C:\Users\PC\Documents\GitHub\Unity3D\RogueLikeExperiment2\Temp\bin\Debug\UnityEngine.HoloLens.xml
 C:\Users\PC\Documents\GitHub\Unity3D\RogueLikeExperiment2\obj\Debug\Assembly-CSharp.dll
 C:\Users\PC\Documents\GitHub\Unity3D\RogueLikeExperiment2\obj\Debug\Assembly-CSharp.pdb
-C:\Users\PC\Documents\GitHub\Unity3D\RogueLikeExperiment2\Temp\bin\Debug\UnityEngine.Advertisements.dll
 C:\Users\PC\Documents\GitHub\Unity3D\RogueLikeExperiment2\Temp\bin\Debug\UnityEngine.GoogleAudioSpatializer.dll
 C:\Users\PC\Documents\GitHub\Unity3D\RogueLikeExperiment2\Temp\bin\Debug\UnityEngine.Purchasing.dll
 C:\Users\PC\Documents\GitHub\Unity3D\RogueLikeExperiment2\Temp\bin\Debug\UnityEngine.SpatialTracking.dll

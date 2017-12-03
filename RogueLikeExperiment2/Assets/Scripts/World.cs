@@ -34,14 +34,14 @@ public class World : MonoBehaviour {
 		levelCollider.pathCount = 0;
 
 		AddLevel (0, LevelGenerator.MakeLevel ());
-		LoadLevel (0);
+		//LoadLevel (0);
 		rig2DPlayer.transform.position = new Vector3 ( playerStartX, playerStartY, rig2DPlayer.transform.position.z);
 	}
 
 	public void CreateLevel () {
 		levelCollider.pathCount = 0;
-		AddLevel (levels.Count, LevelGenerator.MakeLevel ());
-		LoadLevel (levels.Count - 1);
+		//AddLevel (levels.Count, LevelGenerator.MakeLevel ());
+		//LoadLevel (levels.Count - 1);
 		rig2DPlayer.transform.position = new Vector3 ( playerStartX, playerStartY, rig2DPlayer.transform.position.z);
 	}
 

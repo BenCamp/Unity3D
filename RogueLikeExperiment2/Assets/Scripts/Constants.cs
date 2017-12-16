@@ -6,10 +6,10 @@
 
 	public const int EDGEBUFFER = 3;
 
-	public const int MAXLEVELHEIGHT = 30;
-	public const int MINLEVELHEIGHT = 10;
-	public const int MAXLEVELWIDTH = 30;
-	public const int MINLEVELWIDTH = 10;
+	public const int MAXLEVELHEIGHT = 100;
+	public const int MINLEVELHEIGHT = 50;
+	public const int MAXLEVELWIDTH = 100;
+	public const int MINLEVELWIDTH = 50;
 
 	public const int MAXROOMWIDTH = 9;
 	public const int MINROOMWIDTH = 4;

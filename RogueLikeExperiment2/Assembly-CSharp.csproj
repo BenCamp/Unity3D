@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\PlayerCameraMan.cs" />
+     <Compile Include="Assets\Scripts\BlockDebug.cs" />
      <Compile Include="Assets\Scripts\CameraManager.cs" />
      <Compile Include="Assets\Scripts\clipper_library\clipper.cs" />
      <Compile Include="Assets\Scripts\clipper_library\Properties\AssemblyInfo.cs" />

@@ -12,6 +12,7 @@ public class World : MonoBehaviour {
 	public GameObject door;
 	public GameObject hallway;
 	public GameObject room;
+	public Map map;
 	GameObject player;
 	Rigidbody2D rig2DPlayer;
 	GameObject level;
@@ -19,10 +20,10 @@ public class World : MonoBehaviour {
 	ShowTerrain levelTerrain;
 	List<Level> levels = new List<Level> ();
 	int currentlyLoadedLevel = -1;
-	public int[,] map;
 	Vector2 tempCenter = new Vector2();
 	float playerStartX, playerStartY;
 	void Start () {
+		map = new Map ();
 		player = GameObject.Find ("PlayerSprite");
 		rig2DPlayer = player.GetComponent<Rigidbody2D> ();
 		level = gameObject.transform.Find ("Level").gameObject;
@@ -63,9 +64,9 @@ public class World : MonoBehaviour {
 	public void MapDebug (Map map){
 		int mult = 10;
 		BlockDebug bd;
+		GameObject temp = new GameObject ();
 		for (int j = 1; j < map.sectorMap.GetLength(1); j++) {
 			for (int i = 1; i < map.sectorMap.GetLength (0); i++) {
-				GameObject temp = new GameObject ();
 				if (map.sectorMap [i, j].type == Constants.TYPE_EDGE)
 					temp = Instantiate (border);
 				else if (map.sectorMap[i,j].type == Constants.TYPE_ROOM)
@@ -78,12 +79,8 @@ public class World : MonoBehaviour {
 					temp = Instantiate (hallway);
 				temp.gameObject.transform.position = new Vector3(i * mult, -j * mult, 0);
 				bd = temp.GetComponent<BlockDebug> ();
-				if (map.sectorMap [i, j].roomNumber >= map.roomParents.Count) { //Has a hallway parent
-					bd.parent = map.hallwayParents[map.sectorMap[i, j].roomNumber - map.roomParents.Count];
-				}
-				else if (map.sectorMap[i, j].roomNumber != -1){
-					bd.parent = map.roomParents[map.sectorMap [i, j].roomNumber];
-				}
+				bd.roomNumber = map.sectorMap [i, j].roomNumber;
+				bd.count = map.sectorMap [i, j].debugCount;
 			}
 		}
 	}

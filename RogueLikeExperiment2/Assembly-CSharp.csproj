@@ -68,6 +68,7 @@
      <Compile Include="Assets\Scripts\PlayerInput.cs" />
      <Compile Include="Assets\Scripts\PresetStrings.cs" />
      <Compile Include="Assets\Scripts\Room.cs" />
+     <Compile Include="Assets\Scripts\RoomParent.cs" />
      <Compile Include="Assets\Scripts\Sector.cs" />
      <Compile Include="Assets\Scripts\ShowTerrain.cs" />
      <Compile Include="Assets\Scripts\World.cs" />

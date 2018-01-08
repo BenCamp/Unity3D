@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 #endregion
 public class Sector {
+	public int debugCount { get; set; }
 	public string type { get; set; }
 	public int roomNumber { get; set; }
 	public List <string> environmentals = new List<string> ();

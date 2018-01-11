@@ -43,7 +43,7 @@ public static class  MapGenerator {
 		int width = Random.Range (Constants.MINLEVELWIDTH, Constants.MAXLEVELWIDTH);
 		int height = Random.Range (Constants.MINLEVELHEIGHT, Constants.MAXLEVELHEIGHT);
 		solution.rooms = new List<Room> ();
-		solution.roomParents = new List<RoomParent> ();
+		solution.roomParents = new List<bool> ();
 		solution.doors = new List<Vector2Int> ();
 		solution.open = new List<Vector2Int> ();
 		solution.sectorMap = new Sector[width, height];
@@ -109,9 +109,10 @@ public static class  MapGenerator {
 		}
 		room.number = solution.rooms.Count; // Sets the room's number
 		solution.rooms.Add (room); // Adds the room to the map's list of rooms
-		tempParent.rNumber = room.number;
-		tempParent.parent = room.number;
-		solution.roomParents.Add (tempParent);
+		if (solution.roomParents.Count == 0)
+			solution.roomParents.Add (true);
+		else 
+			solution.roomParents.Add (false);
 		return solution;
 	}
 	#endregion
@@ -218,13 +219,14 @@ public static class  MapGenerator {
 		Map solution = map;
 		solution.sectorMap [door.x, door.y].type = Constants.TYPE_DOOR;
 		solution.sectorMap [door.x, door.y].roomNumber = roomNumber;
+		solution.open.Remove (new Vector2Int (door.x, door.y));
 		return solution;
 	}
 	#endregion
 	#region Empty
 	static Map GenerateAllEmpty (Map map) {
 		Map solution = map;
-		for (int i = 0; i < Constants.MAXTRIES * 2; i++) {
+		for (int i = 0; i < Constants.MAXTRIES * 5; i++) {
 			Room tempEmptySpace = GenerateEmpty (solution.sectorMap.GetLength(0), solution.sectorMap.GetLength(1)); // Make a negative-room to TRY to put into map
 			if (EmptyIsGood (tempEmptySpace, solution)) { // Check that the negative-room is compatible with the map as it stands
 				solution = AddEmptyToMap (tempEmptySpace, solution); // Add the negative-room to the map
@@ -239,12 +241,12 @@ public static class  MapGenerator {
 		solution.upperLeft = new Vector2Int	 (Random.Range(0 + Constants.EDGEBUFFER, width - Constants.EDGEBUFFER - solution.width + 1), Random.Range(0 + Constants.EDGEBUFFER, height - Constants.EDGEBUFFER - solution.height + 1));
 		return solution;
 	}
-	static bool EmptyIsGood (Room negRoom, Map map) {
+	static bool EmptyIsGood (Room emptyRoom, Map map) {
 		bool solution = true;
 		try {
-			for (int i = -Constants.EDGEBUFFER; i < negRoom.width + Constants.EDGEBUFFER; i++) {
-				for (int j = -Constants.EDGEBUFFER; j < negRoom.height + Constants.EDGEBUFFER; j++) {
-					if (map.sectorMap [i +  negRoom.upperLeft.x, j + negRoom.upperLeft.y].type == Constants.TYPE_ROOM) {
+			for (int i = -Constants.EDGEBUFFER; i < emptyRoom.width + Constants.EDGEBUFFER; i++) {
+				for (int j = -Constants.EDGEBUFFER; j < emptyRoom.height + Constants.EDGEBUFFER; j++) {
+					if (map.sectorMap [i +  emptyRoom.upperLeft.x, j + emptyRoom.upperLeft.y].type == Constants.TYPE_ROOM) {
 						solution = false;
 					}
 				}
@@ -254,155 +256,35 @@ public static class  MapGenerator {
 		}
 		return solution;
 	}
-	static Map AddEmptyToMap (Room negRoom, Map map) {
+	static Map AddEmptyToMap (Room emptyRoom, Map map) {
 		Map solution = map;
-		for (int i = 0; i < negRoom.width; i++) {
-			for (int j = 0; j < negRoom.height; j++) {
-				solution.open.Remove(new Vector2Int (i + negRoom.upperLeft.x, j + negRoom.upperLeft.y));
+		for (int i = 0; i < emptyRoom.width; i++) {
+			for (int j = 0; j < emptyRoom.height; j++) {
+				solution.open.Remove(new Vector2Int (i + emptyRoom.upperLeft.x, j + emptyRoom.upperLeft.y));
 			}
 		}
 		return solution;
 	}
 	#endregion
 	#region Hallways
-	static Map AddHallway (Map map, int count){//Selects a random open sector and turns it into a hallway
-		Map solution = map;
-		int openSector = Random.Range (0, solution.open.Count);
-		Vector2Int newHallway = solution.open[openSector];
-		solution.open.RemoveAt (openSector);
-		if (IsHallwayNorth(solution, newHallway))
-			solution.sectorMap [newHallway.x, newHallway.y].roomNumber = solution.sectorMap [newHallway.x, newHallway.y - 1].roomNumber;
-		else if (IsHallwayEast(solution, newHallway))
-			solution.sectorMap [newHallway.x, newHallway.y].roomNumber = solution.sectorMap [newHallway.x + 1, newHallway.y].roomNumber;
-		else if (IsHallwaySouth (solution, newHallway))
-			solution.sectorMap [newHallway.x, newHallway.y].roomNumber = solution.sectorMap [newHallway.x, newHallway.y + 1].roomNumber;
-		else if (IsHallwayWest(solution, newHallway))
-			solution.sectorMap [newHallway.x, newHallway.y].roomNumber = solution.sectorMap [newHallway.x - 1, newHallway.y].roomNumber;
-		
-		if (IsHallway(solution, newHallway))//Has already been combined with another room
-			solution = CombineHallways (solution, newHallway);
-		else {
-			RoomParent tempParent = new RoomParent ();
-			tempParent.rNumber = solution.roomParents.Count;
-			tempParent.parent = solution.roomParents.Count;
-			solution.sectorMap[newHallway.x, newHallway.y].type = Constants.TYPE_HALLWAY;
-			solution.sectorMap [newHallway.x, newHallway.y].roomNumber = solution.roomParents.Count;
-			solution.roomParents.Add (tempParent);
-		}
-		solution.sectorMap [newHallway.x, newHallway.y].debugCount = count;
-		return solution;
-	}
-	static bool CheckIfAllRoomsConnected (Map map) {
-		bool solution = true;
-		for (int i = 0; i < map.rCount; i++) {
-			if (map.roomParents[i].parent != 0)
-				solution = false;
-		}
-		return solution;
-	}
-	static Map CombineHallways (Map map, Vector2Int newHallway) {
-		/*
-		 * The program will look at each neighbor of the new hallway one at a time.
-		 * Recursion: 
-		 * 		If the neighbor's room isn't its own parent, then it will jump to the parent
-		 * 		Once a room that points to itself is found, it will return that rooms number
-		 * 
-		 * Recursion:
-		 * 		Recieve the List of children
-		 * 		If the room has children apply this to each child
-		 * 			After each child has copied their numbers to the list, clear the child list
-		 * 
-		 * 		If the room does not have children copy this rooms parent number to the list
-		 * 		return the list
-		 * 	
-		 */
-		Map solution = map;
-		List <int> parents = new List<int> ();
-		int tempTopParent = -1;
-		//North
-		if (IsHallwayNorth (solution, newHallway)) {
-			tempTopParent = FindTopParent (solution, solution.sectorMap [newHallway.x, newHallway.y - 1].roomNumber);
-			parents = FindAllParents (solution, parents, tempTopParent);
-		}
-		//East
-		if (IsHallwayEast (solution, newHallway)) {
-			tempTopParent = FindTopParent (solution, solution.sectorMap [newHallway.x + 1, newHallway.y].roomNumber);
-			parents = FindAllParents (solution, parents, tempTopParent);
-		}
-		//South
-		if (IsHallwaySouth (solution, newHallway)) {
-			tempTopParent = FindTopParent (solution, solution.sectorMap [newHallway.x, newHallway.y + 1].roomNumber);
-			parents = FindAllParents (solution, parents, tempTopParent);
-		}
-		//West
-		if (IsHallwayWest (solution, newHallway)) {
-			tempTopParent = FindTopParent (solution, solution.sectorMap [newHallway.x - 1, newHallway.y].roomNumber);
-			parents = FindAllParents (solution, parents, tempTopParent);
-		}
-		return solution;
-	}
-	static List <int> FindAllParents (Map map, List <int> parents, int here){
-		List <int> solution = parents;
-		if (map.roomParents [here].children.Count > 0) {
-			foreach (int p in solution) {
-				solution = FindAllParents (map, solution, p);
-			}
-			map.roomParents [here].children.Clear ();
-		}
-		solution.Add (here);
-		return solution;
-	}
-	static int FindLowestNumberedParent (List<int> parents){
-		int solution = -1;
-
-		return solution;
-	}
-	static int FindTopParent (Map map, int num){
-		int solution = num;
-		if (map.roomParents [num].parent != num)
-			solution = FindTopParent (map, map.roomParents [num].parent);
-		return solution;
-	}
 	static Map GenerateAllHallways (Map map) {
 		Map solution = map;
+		int nextInt;
+		Vector2Int nextVec;
 		bool done = false;
 		solution = StartHallways (solution);
-		int count = 1;
-		while (!done && solution.open.Count != 0 && count % 900 != 0) {
-			solution = AddHallway (solution, count);
-			done = CheckIfAllRoomsConnected (solution);
-			count++;
+		while (!done && solution.open.Count != 0) {
+			nextInt = Random.Range (0, solution.open.Count);
+			nextVec = solution.open [nextInt];
+			solution.open.RemoveAt (nextInt);
+			solution.sectorMap [nextVec.x, nextVec.y].type = Constants.TYPE_HALLWAY;
+			if (NextToZero (nextVec, solution)) {
+				solution = SetConnectedHallwaysToZero (nextVec, solution);
+				done = CheckParents (map);
+			}
+			else
+				solution.sectorMap [nextVec.x, nextVec.y].roomNumber = 1;
 		}
-		return solution;
-	}
-	static bool IsHallway (Map map, Vector2Int check){
-		bool solution = false;
-		if (map.sectorMap [check.x, check.y].type == Constants.TYPE_HALLWAY)
-			solution = true;
-		return solution;
-	}
-	static bool IsHallwayNorth (Map map, Vector2Int check){
-		bool solution = false;
-		if (map.sectorMap [check.x, check.y - 1].type == Constants.TYPE_HALLWAY)
-			solution = true;
-		return solution;
-	}
-	static bool IsHallwayEast (Map map, Vector2Int check){
-		bool solution = false;
-		if (map.sectorMap [check.x + 1, check.y].type == Constants.TYPE_HALLWAY)
-			solution = true;
-		return solution;
-	}
-	static bool IsHallwaySouth (Map map, Vector2Int check){
-		bool solution = false;
-		if (map.sectorMap [check.x, check.y + 1].type == Constants.TYPE_HALLWAY)
-			solution = true;
-		return solution;
-	}
-	static bool IsHallwayWest (Map map, Vector2Int check){
-		bool solution = false;
-		if (map.sectorMap [check.x - 1, check.y].type == Constants.TYPE_HALLWAY)
-			solution = true;
 		return solution;
 	}
 	static Map StartHallways (Map map) {// Adds a hallway in front of each door to ensure that the hallway system can be built properly
@@ -414,7 +296,6 @@ public static class  MapGenerator {
 			room = solution.sectorMap [door.x, door.y].roomNumber;
 			if (door.y == solution.rooms [room].upperLeft.y) {
 				temp.y--;
-					
 			}
 			else if (door.x == solution.rooms [room].upperLeft.x + solution.rooms [room].width - 1) {	
 				temp.x++;
@@ -427,8 +308,72 @@ public static class  MapGenerator {
 			}
 			solution.sectorMap [temp.x, temp.y].type = Constants.TYPE_HALLWAY;
 			solution.sectorMap [temp.x, temp.y].roomNumber = room;
-
+			solution.open.Remove (new Vector2Int (temp.x, temp.y));
 		}
+		return solution;
+	}
+	static bool NextToZero (Vector2Int check, Map map){
+		bool solution = false;
+		if (map.sectorMap [check.x, check.y - 1].roomNumber == 0)
+			solution = true;
+		if (map.sectorMap [check.x + 1, check.y].roomNumber == 0)
+			solution = true;
+		if (map.sectorMap [check.x, check.y + 1].roomNumber == 0)
+			solution = true;
+		if (map.sectorMap [check.x - 1, check.y].roomNumber == 0)
+			solution = true;
+		return solution;
+	}
+	static Map SetConnectedHallwaysToZero (Vector2Int nextVec, Map map){
+		Map solution = map;
+		int temp;
+		Vector2Int north = new Vector2Int (nextVec.x, nextVec.y - 1);
+		Vector2Int east = new Vector2Int (nextVec.x + 1, nextVec.y);
+		Vector2Int south = new Vector2Int (nextVec.x, nextVec.y + 1);
+		Vector2Int west = new Vector2Int (nextVec.x - 1, nextVec.y);
+		solution.sectorMap [nextVec.x, nextVec.y].roomNumber = 0;
+		temp = CheckSector (north, solution);
+		if (temp > 0)
+			solution = ChangeParent (temp, solution);
+		else if (temp == -1)
+			solution = SetConnectedHallwaysToZero(north, solution);
+		temp = CheckSector (east, solution);
+		if (temp > 0)
+			solution = ChangeParent (temp, solution);
+		else if (temp == -1)
+			solution = SetConnectedHallwaysToZero(east, solution);
+		temp = CheckSector (south, solution);
+		if (temp > 0)
+			solution = ChangeParent (temp, solution);
+		else if (temp == -1)
+			solution = SetConnectedHallwaysToZero(south, solution);
+		temp = CheckSector (west, solution);
+		if (temp > 0)
+			solution = ChangeParent (temp, solution);
+		else if (temp == -1)
+			solution = SetConnectedHallwaysToZero(west, solution);
+		return solution;
+	}
+	static Map ChangeParent (int change, Map map){
+		Map solution = map;
+		solution.roomParents [change] = true;
+		return solution;
+	}
+	static bool CheckParents (Map map){
+		bool solution = true;
+		foreach (bool p in map.roomParents) {
+			if (!p)
+				solution = false;
+		}
+		return solution;
+	}
+	static int CheckSector (Vector2Int check, Map map){
+		int solution = 0;
+		Sector temp = map.sectorMap [check.x, check.y];
+		if (temp.type == Constants.TYPE_DOOR)
+			solution = temp.roomNumber;
+		else if (temp.type == Constants.TYPE_HALLWAY && temp.roomNumber != 0)
+			return -1;
 		return solution;
 	}
 	#endregion

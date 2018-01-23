@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿#region Using
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using ClipperLib;
@@ -6,6 +7,9 @@ using VecPath = System.Collections.Generic.List<UnityEngine.Vector2>;
 using VecPaths = System.Collections.Generic.List<System.Collections.Generic.List<UnityEngine.Vector2>>;
 using Path = System.Collections.Generic.List<ClipperLib.IntPoint>;
 using Paths = System.Collections.Generic.List<System.Collections.Generic.List<ClipperLib.IntPoint>>;
+#endregion
+#region Structs and whatnot
+#endregion
 public class World : MonoBehaviour {
 	public GameObject empty;
 	public GameObject border;
@@ -31,7 +35,7 @@ public class World : MonoBehaviour {
 		levelCollider = level.gameObject.GetComponent<PolygonCollider2D> ();
 		levelCollider.pathCount = 0;
 
-		AddLevel (0, LevelGenerator.MakeLevel ());
+		AddLevel (0, LevelGenerator.MakeNewLevel ());
 		//LoadLevel (0);
 		rig2DPlayer.transform.position = new Vector3 ( playerStartX, playerStartY, rig2DPlayer.transform.position.z);
 	}
@@ -61,6 +65,7 @@ public class World : MonoBehaviour {
 		levelCollider.pathCount--;
 		//levelTerrain.UpdateTerrainImage (width, height, levels[levelNum].paths);
 	}
+	#region Debugging
 	public void MapDebug (Map map){
 		int mult = 10;
 		BlockDebug bd;
@@ -84,5 +89,44 @@ public class World : MonoBehaviour {
 			}
 		}
 	}
-
+	public void EdgeDebug (Edge[,] edges){
+		int count = 0;
+		Vector2[] points = new Vector2[2];
+		for (int j = 0; j < edges.GetLength (1); j++) {
+			for (int i = 0; i < edges.GetLength (0); i++) {
+				if (edges[i, j].north){
+					points [0] = new Vector2 (i * Constants.PLAYERHEIGHT, -j * Constants.PLAYERHEIGHT);
+					points [1] = new Vector2 ((i + 1) * Constants.PLAYERHEIGHT, -j * Constants.PLAYERHEIGHT);
+					levelCollider.pathCount++;
+					levelCollider.SetPath (count, points);
+					count++;
+				}
+				if (edges [i, j].east) {
+					points [0] = new Vector2 ((i + 1) * Constants.PLAYERHEIGHT, -j * Constants.PLAYERHEIGHT);
+					points [1] = new Vector2 ((i + 1) * Constants.PLAYERHEIGHT, -(j + 1) * Constants.PLAYERHEIGHT);
+					levelCollider.pathCount++;
+					levelCollider.SetPath (count, points);
+					count++;
+				}
+				if (edges [i, j].south) {
+					points [0] = new Vector2 (i * Constants.PLAYERHEIGHT, -(j + 1) * Constants.PLAYERHEIGHT);
+					points [1] = new Vector2 ((i + 1) * Constants.PLAYERHEIGHT, -(j + 1) * Constants.PLAYERHEIGHT);
+					levelCollider.pathCount++;
+					levelCollider.SetPath (count, points);
+					count++;
+				}
+				if (edges [i, j].west) {
+					points [0] = new Vector2 (i * Constants.PLAYERHEIGHT, -j * Constants.PLAYERHEIGHT);
+					points [1] = new Vector2 (i * Constants.PLAYERHEIGHT, -(j + 1) * Constants.PLAYERHEIGHT);
+					levelCollider.pathCount++;
+					levelCollider.SetPath (count, points);
+					count++;
+				}
+			}
+		}
+	}
+	public void PathsDebug (List <List<Vector2>> paths) {
+		levelCollider.pathCount = 1;
+	}
+	#endregion
 }

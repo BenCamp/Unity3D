@@ -11,12 +11,12 @@ public class PlayerActions : MonoBehaviour {
 
 	/***Variables***/
 	public int xAxisForce = 1000;
-	public int xAxisMaxVelocity = 7;
+	public int xAxisMaxVelocity = 400;
 
-	public int yAxisForce = 20000;
-	public int yAxisMaxVelocity = 10;
+	public int yAxisForce = 30000;
+	public int yAxisMaxVelocity = 900;
 
-	public int jumpDelay = 20;
+	public int jumpDelay = 2;
 	int jumpDelayNow = 0;
 
 	public float friction = 10f;
@@ -116,6 +116,7 @@ public class PlayerActions : MonoBehaviour {
 	/***Functions***/
 	public void OnSolid (bool value) {
 		onSolid = value;
+		Debug.Log ("OnSolid = " + onSolid);
 	}
 
 	Vector2 FrictionMove () {

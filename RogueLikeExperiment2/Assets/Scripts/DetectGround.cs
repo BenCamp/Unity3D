@@ -7,14 +7,15 @@ public class DetectGround : MonoBehaviour {
 	PlayerActions pA;
 
 	//Variables
-	public float radius = 0.08f;
 	public LayerMask solidLayer;
-
+	public CircleCollider2D cc;
 	void Start (){
 		pA = gameObject.GetComponentInParent<PlayerActions> ();
+		cc = gameObject.GetComponentInParent<CircleCollider2D> ();
 	}
 
 	void FixedUpdate () {
-		pA.OnSolid(Physics2D.OverlapCircle (gameObject.transform.position, radius, solidLayer));
+		pA.OnSolid(cc.IsTouchingLayers (solidLayer));
+		//Physics2D.OverlapCircle (gameObject.transform.position, radius, solidLayer)
 	}
 }

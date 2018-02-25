@@ -30,7 +30,7 @@ public static class  MapGenerator {
 		//TODO Friendlies
 
 		//Debugging
-		world.MapDebug(solution);
+		world.DebugMap(solution);
 
 		//Finish
 		return solution;
